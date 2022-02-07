@@ -1,0 +1,83 @@
+######################################################################
+#                                                                    #
+#                             Config.yml                             #
+#                                                                    #
+######################################################################
+
+# Set this to true if you want to use placeholderAPI in the plugin
+PAPI hook: true
+
+# Set PAPI hook to true to use all of the placeholderAPI placeholders
+# in the messages
+
+# These are the placeholders provided by the plugin
+Placeholders:
+  Prefix: "&aTardisDev &8|"
+  Error: "&cError &8|"
+  Success: "&aSuccess &8|"
+  Plugin Name: "&bHoverStats"
+  Command Name: "HoverStats"
+
+######################################################################
+#                        List of placeholders                        #
+######################################################################
+#                                                                    #
+#                   Prefix       -       %prefix%                    #
+#                    Error       -       %error%                     #
+#                  Success       -       %success%                   #
+#              Plugin Name       -       %pluginname%                #
+#             Command Name       -       %cmdName%                   #
+#                   Player       -       %player%                    #
+#                                                                    #
+#                                                                    #
+#                          * Disclaimer *                            #
+#                 Player may not work for certain                    #
+#                             messages                               #
+#                                                                    #
+######################################################################
+
+######################################################################
+#                                                                    #
+#                              Messages                              #
+#                                                                    #
+######################################################################
+Messages:
+  System Messages:
+    Success:
+      PAPI Hook: "&aFound PlaceholderAPI, hooking into it."
+      Reloaded: "%success% %pluginname%'s &7config has successfully reloaded!"
+
+    Error:
+      PAPI Hook: "&aCouldn't find PlaceholderAPI, all placeholders from PAPI won't work."
+      No Permissions: "%error% &7You don't have permission to run this command!"
+
+  # Default help message, you can change this if you want
+  Help:
+    - ""
+    - "&7&l&m⎯⎯⎯⎯⎯⎯&r &a&l%pluginname% Help &r&7&l&m⎯⎯⎯⎯⎯⎯&r"
+    - "&a/%cmdName% &7- Shows this message."
+    - "&a/%cmdName% help &7- Shows this message."
+    - "&a/%cmdName% reload &7- Reload's %pluginname%'s config."
+    - "&7&l&m⎯⎯⎯⎯⎯⎯&r &a&l%pluginname% Help &r&7&l&m⎯⎯⎯⎯⎯⎯&r"
+    - ""
+
+######################################################################
+#                                                                    #
+#                          Hover Messages                            #
+#                                                                    #
+######################################################################
+Hover:
+  Stats:
+    - "&e&l%player%'s Stats:"
+    - ""
+    - "&b&lBALANCE:"
+    - "%vault_eco_balance_formatted%"
+    - "&b&lGANG KILLS:"
+    - "%gangsplus_gang_kills%"
+    - "&b&lBLOCKS MINED:"
+    - "%pickaxecounter_blocks%"
+    - "&b&lJoin Date:"
+    - "%statstracker_first_joined%"
+    - ""
+    - "&e&lClick this to message player"
+  Stats Click Command: "/msg %player% "

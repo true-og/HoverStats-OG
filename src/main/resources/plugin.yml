@@ -1,0 +1,30 @@
+name: HoverStats
+version: '${project.version}'
+main: me.brand0n_.hoverstats.HoverStats
+api-version: 1.16
+depend: [ PlaceholderAPI ]
+authors: [ Brand0n_ ]
+description: Add a hover effect over the players message in chat saying some key stats
+
+
+commands:
+  hoverstats:
+    description: Command used to reload the plugin
+    permission: hoverstats.help
+    default: true
+
+permissions:
+  hoverstats.reload:
+    default: false
+  hoverstats.help:
+    default: true
+
+  hoverstats.admin:
+    children:
+      hoverstats.reload: true
+      hoverstats.help: true
+  hoverstats.*:
+    children:
+      hoverstats.reload: true
+      hoverstats.help: true
+
