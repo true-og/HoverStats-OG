@@ -16,13 +16,22 @@ public class OnPlayerChat implements Listener {
         if (e.isCancelled()) {
             return;
         }
-        String format = e.getFormat().replace(" %2$s", " ");
+        String format = e.getFormat().replace("%2$s", "");
+        boolean hasFinalSpace = String.valueOf(format.charAt(format.length()-1)).equalsIgnoreCase(" ");
+
+        format = format.trim();
         format = checkForEssentialsFormatting(format);
+        format = format.trim();
 
         TextComponent mainMessage = new TextComponent();
         TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(e.getPlayer(), format);
-        TextComponent eMessage = new TextComponent(e.getMessage());
+        TextComponent eMessage;
 
+        if (hasFinalSpace) {
+            eMessage = new TextComponent(" " + e.getMessage());
+        } else {
+            eMessage = new TextComponent(e.getMessage());
+        }
         mainMessage.addExtra(hoverEvents);
         mainMessage.addExtra(eMessage);
 
