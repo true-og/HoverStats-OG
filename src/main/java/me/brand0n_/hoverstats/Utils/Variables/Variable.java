@@ -31,4 +31,8 @@ public class Variable {
     public String hoverCommand() {
         return plugin.getConfig().getString("Hover.Stats Click Command");
     }
+
+    public String placeholderPlaceholder() {
+        return plugin.getConfig().getString("Placeholders.Placeholder Filler");
+    }
 }

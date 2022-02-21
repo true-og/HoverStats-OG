@@ -15,7 +15,6 @@ public class HoverUtils {
 
     public TextComponent setupHoverMessage(Player p, String message) {
         String hover = formatHoverMessage(p, plugin.variable.statsHover());
-
         Text hoverText = new Text(hover);
 
         TextComponent mainComponent = new TextComponent("");
@@ -31,6 +30,13 @@ public class HoverUtils {
         str = str.trim();
         str = str.substring(1, str.length() - 1);
         str = str.replaceAll(", ", "\n&f");
-        return plugin.placeholders.addPlaceholders(p, str);
+        str = plugin.placeholders.addPlaceholders(p, str);
+        if (str.contains("{") && str.contains("}") && str.length() > 2) {
+            str = str.replace("{", "%").replace("}", "%");
+        }
+        if (str.equalsIgnoreCase("null") || str.isEmpty()) {
+            return plugin.variable.placeholderPlaceholder();
+        }
+        return str;
     }
 }

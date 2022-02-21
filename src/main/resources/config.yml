@@ -17,6 +17,7 @@ Placeholders:
   Success: "&aSuccess &8|"
   Plugin Name: "&bHoverStats"
   Command Name: "HoverStats"
+  Placeholder Filler: "0" # Set the default placeholder for any placeholders that are empty or equal "null"
 
 ######################################################################
 #                        List of placeholders                        #
