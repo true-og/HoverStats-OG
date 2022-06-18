@@ -10,6 +10,7 @@ import me.brand0n_.hoverstats.Utils.Hover.HoverUtils;
 import me.brand0n_.hoverstats.Utils.Variables.Variable;
 import me.brand0n_.hoverstats.Utils.Version.VersionUtils;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HoverStats extends JavaPlugin {
@@ -34,7 +35,7 @@ public final class HoverStats extends JavaPlugin {
         saveDefaultConfig();
         // Setup classes
         setupClasses();
-        // Check if Soft Depends are loaded
+        // Check if Depends are loaded
         checkDependentPlugins();
     }
 
@@ -70,16 +71,13 @@ public final class HoverStats extends JavaPlugin {
         // Save config with comments
         saveDefaultConfig();
 
-        // Send reloaded message
-        sender.sendMessage(messages.reloaded(sender));
-    }
-    public void reloadPluginConsole(CommandSender sender) {
-        // Reload the config
-        reloadConfig();
-        // Save config with comments
-        saveDefaultConfig();
 
-        // Send reloaded message
-        getLogger().info(messages.reloaded(sender));
+        if (sender instanceof Player) {
+            // Send reloaded Messages
+            sender.sendMessage(messages.reloaded(sender));
+            return;
+        }
+        // Send reloaded Messages to console
+        getLogger().info(messages.reloaded(null));
     }
 }

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class HoverStatsCommand  implements CommandExecutor {
+public class HoverStatsCommand implements CommandExecutor {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     @Override
@@ -59,14 +59,8 @@ public class HoverStatsCommand  implements CommandExecutor {
             if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
                 // Check if player is able to use this command
                 if (sender.hasPermission("hoverstats.reload") || sender.isOp()) {
-                    // Check if sender is a player or if its console
-                    if (sender instanceof Player) {
-                        // Reload the plugin as a player
-                        plugin.reloadPlugin(sender);
-                    } else {
-                        // Reload the plugin as console
-                        plugin.reloadPluginConsole(sender);
-                    }
+                    // Reload the plugin
+                    plugin.reloadPlugin(sender);
                     return true;
                 } else {
                     sender.sendMessage(plugin.messages.noPermissions(sender));

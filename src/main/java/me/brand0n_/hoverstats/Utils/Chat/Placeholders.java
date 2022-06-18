@@ -32,6 +32,7 @@ public class Placeholders {
                 .replace("%prefix%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Prefix")))
                 .replace("%error%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Error")))
                 .replace("%success%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Success")))
+                .replace("%cmdname%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Command Name")))
                 .replace("%pluginname%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Plugin Name"))));
     }
 }

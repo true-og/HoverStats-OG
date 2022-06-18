@@ -14,13 +14,13 @@ public class HoverUtils {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     public TextComponent setupHoverMessage(Player p, String message) {
-        String hover = formatHoverMessage(p, plugin.variable.statsHover());
-        Text hoverText = new Text(hover);
+        String hover = plugin.colors.chatColor(formatHoverMessage(p, plugin.variable.statsHover()));
+        Text hoverText = plugin.colors.textCompChatColor(hover);
 
         TextComponent mainComponent = new TextComponent("");
 
-        mainComponent.addExtra(message);
-        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, plugin.variable.hoverCommand().replace("%player%", p.getName())));
+        mainComponent.addExtra(plugin.colors.chatColor(message));
+        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, plugin.colors.chatColor(plugin.variable.hoverCommand().replace("%player%", p.getName()))));
         mainComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
         return mainComponent;
     }

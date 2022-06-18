@@ -17,10 +17,12 @@ public class OnPlayerChat implements Listener {
             return;
         }
         String format = e.getFormat().replace("%2$s", "");
+        format = format.replace("%1$s", e.getPlayer().getDisplayName());
         boolean hasFinalSpace = String.valueOf(format.charAt(format.length()-1)).equalsIgnoreCase(" ");
 
         format = format.trim();
         format = checkForEssentialsFormatting(format);
+        format = plugin.colors.chatColor(format);
         format = format.trim();
 
         TextComponent mainMessage = new TextComponent();
