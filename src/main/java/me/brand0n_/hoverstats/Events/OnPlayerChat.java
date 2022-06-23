@@ -16,6 +16,7 @@ public class OnPlayerChat implements Listener {
         if (e.isCancelled()) {
             return;
         }
+
         String format = e.getFormat().replace("%2$s", "");
         format = format.replace("%1$s", e.getPlayer().getDisplayName());
         boolean hasFinalSpace = String.valueOf(format.charAt(format.length()-1)).equalsIgnoreCase(" ");
@@ -40,7 +41,8 @@ public class OnPlayerChat implements Listener {
         for (Player p : e.getRecipients()) {
             p.spigot().sendMessage(mainMessage);
         }
-        e.setCancelled(true);
+        // Make is so the second message is not sent
+        e.getRecipients().clear();
     }
 
     private String checkForEssentialsFormatting(String str) {
