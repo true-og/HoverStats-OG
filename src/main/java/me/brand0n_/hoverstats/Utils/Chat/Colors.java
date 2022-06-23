@@ -22,7 +22,6 @@ public class Colors {
 
             while (match.find()) {
                 String color = s.substring(match.start(), match.end());
-                System.out.println(color);
                 ChatColor hexColor = ChatColor.of(color);
                 s = s.replace(color, hexColor+"");
                 match = pattern.matcher(s);
@@ -43,10 +42,8 @@ public class Colors {
 
             while (match.find()) {
                 String color = str.substring(match.start(), match.end());
-                System.out.println(color);
                 ChatColor hexColor = ChatColor.of(color);
                 str = str.replace(color, hexColor+"");
-                System.out.println(str);
                 textComp = new Text(str);
                 match = pattern.matcher(str);
             }
