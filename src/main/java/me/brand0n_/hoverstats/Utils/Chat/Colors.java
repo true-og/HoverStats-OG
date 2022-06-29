@@ -2,7 +2,6 @@ package me.brand0n_.hoverstats.Utils.Chat;
 
 import me.brand0n_.hoverstats.HoverStats;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.util.regex.Matcher;
@@ -11,7 +10,7 @@ import java.util.regex.Pattern;
 public class Colors {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
     // Setup Hex Pattern
-    private final Pattern pattern = Pattern.compile("#[A-Fa-f0-9]{6}");
+    private final Pattern pattern = Pattern.compile("#[a-fA-F0-9]{6}");
 
     // Set chat color
     public String chatColor(String s) {
