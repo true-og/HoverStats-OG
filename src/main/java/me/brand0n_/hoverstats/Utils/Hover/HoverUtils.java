@@ -36,6 +36,6 @@ public class HoverUtils {
         if (str.equalsIgnoreCase("null") || str.isEmpty()) {
             return plugin.variable.placeholderPlaceholder();
         }
-        return str;
+        return plugin.colors.chatColor(str);
     }
 }

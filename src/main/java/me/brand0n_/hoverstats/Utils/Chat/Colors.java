@@ -2,6 +2,7 @@ package me.brand0n_.hoverstats.Utils.Chat;
 
 import me.brand0n_.hoverstats.HoverStats;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
 import java.util.regex.Matcher;
@@ -32,7 +33,7 @@ public class Colors {
 
     // Text component chat color
     public Text textCompChatColor(String str) {
-        Text textComp = new Text(chatColor(str));
+        Text textComp = new Text(TextComponent.fromLegacyText(chatColor(str)));
 
         // Check if the server is 1.16
         if (plugin.version.isCorrectVersionHex()) {
