@@ -19,8 +19,8 @@ public class OnPlayerChat implements Listener {
             return;
         }
 
-        String message = e.getFormat().split(" ")[1];
-        String format = e.getFormat().replace(message, "");
+        String message = e.getMessage();
+        String format = e.getFormat().replace("%2$s", "");
 
         format = format.replace("%1$s", e.getPlayer().getDisplayName());
         boolean hasFinalSpace = String.valueOf(format.charAt(format.length() - 1)).equalsIgnoreCase(" ");
@@ -30,10 +30,12 @@ public class OnPlayerChat implements Listener {
         format = plugin.colors.chatColor(format);
         format = format.trim();
 
+        message = plugin.colors.finalChatColor(format) + message; // Add chat color
         message = plugin.colors.chatColor(message);
 
+
         e.setFormat(plugin.colors.chatColor(checkForEssentialsFormatting(e.getFormat().replace("%1$s", e.getPlayer().getDisplayName()))));
-        e.setMessage(message.replace("%2$s", e.getMessage()));
+        e.setMessage(message.replace("%2$s", message));
 
         TextComponent mainMessage = new TextComponent();
         TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(e.getPlayer(), plugin.colors.chatColor(format));

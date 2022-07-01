@@ -23,7 +23,7 @@ public class Colors {
             while (match.find()) {
                 String color = s.substring(match.start(), match.end());
                 ChatColor hexColor = ChatColor.of(color);
-                s = s.replace(color, hexColor+"");
+                s = s.replace(color, hexColor + "");
                 match = pattern.matcher(s);
             }
         }
@@ -43,7 +43,7 @@ public class Colors {
             while (match.find()) {
                 String color = str.substring(match.start(), match.end());
                 ChatColor hexColor = ChatColor.of(color);
-                str = str.replace(color, hexColor+"");
+                str = str.replace(color, hexColor + "");
                 textComp = new Text(str);
                 match = pattern.matcher(str);
             }
@@ -51,4 +51,10 @@ public class Colors {
         // Allow user to use & instead of the weird minecraft color codes
         return textComp;
     }
+
+    // Get final color
+    public String finalChatColor(String str) {
+        return org.bukkit.ChatColor.getLastColors(str);
+    }
+
 }
