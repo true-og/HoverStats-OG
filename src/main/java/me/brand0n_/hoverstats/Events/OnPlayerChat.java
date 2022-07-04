@@ -8,54 +8,51 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Set;
+
 public class OnPlayerChat implements Listener {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
+
+    private boolean hasFinalSpace = false;
 
     // Setting the Event Priority to Highest it makes it so the plugin has the final say in the chat event.
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncPlayerChatEvent e) {
+        Player p = e.getPlayer();
+
         // For plugin compatibility check if the event is cancelled by another plugin.
         if (e.isCancelled()) {
             return;
         }
 
-        String message = e.getMessage();
-        String format = e.getFormat().replace("%2$s", "");
+        // Check if the plugin is using its own formatting
+        e.setFormat(formatChat(plugin.variable.useChatFormatting, p, e.getFormat()));
 
-        format = format.replace("%1$s", e.getPlayer().getDisplayName());
-        boolean hasFinalSpace = String.valueOf(format.charAt(format.length() - 1)).equalsIgnoreCase(" ");
+        // Format chat based on the current chat format
+        String format = formatChat(e.getFormat(), p);
+        String message = formatMessage(e.getMessage(), format);
 
-        format = format.trim();
-        format = checkForEssentialsFormatting(format);
-        format = plugin.colors.chatColor(format);
-        format = format.trim();
+        e.setFormat(plugin.colors.chatColor(checkForEssentialsFormatting(e.getFormat().replace("%1$s", p.getDisplayName()))));
+        e.setMessage(message);
 
-        message = plugin.colors.finalChatColor(format) + message; // Add chat color
-        message = plugin.colors.chatColor(message);
-
-
-        e.setFormat(plugin.colors.chatColor(checkForEssentialsFormatting(e.getFormat().replace("%1$s", e.getPlayer().getDisplayName()))));
-        e.setMessage(message.replace("%2$s", message));
-
-        TextComponent mainMessage = new TextComponent();
-        TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(e.getPlayer(), plugin.colors.chatColor(format));
-        TextComponent eMessage;
-
-        if (hasFinalSpace) {
-            eMessage = new TextComponent(TextComponent.fromLegacyText(" " + e.getMessage()));
-        } else {
-            eMessage = new TextComponent(TextComponent.fromLegacyText(e.getMessage()));
-        }
-
-        mainMessage.addExtra(hoverEvents);
-        mainMessage.addExtra(eMessage);
-
-        for (Player p : e.getRecipients()) {
-            p.spigot().sendMessage(mainMessage);
-        }
+        // Send the player the hover able chat message
+        sendHoverMessage(e.getRecipients(), format, e.getMessage(), p);
 
         // Make is so the second message is not sent
         e.getRecipients().clear();
+    }
+
+    private String formatChat(boolean useFormatting, Player p, String nativeFormatting) {
+        if (!useFormatting) {
+            return nativeFormatting;
+        }
+        String newFormatting = plugin.variable.chatFormatting;
+
+        newFormatting = newFormatting.replace("%message%", "%2$s");
+        newFormatting = newFormatting.replace("%name%", p.getName());
+        newFormatting = newFormatting.replace("%displayname%", "%1$s");
+
+        return newFormatting;
     }
 
     private String checkForEssentialsFormatting(String str) {
@@ -84,5 +81,44 @@ public class OnPlayerChat implements Listener {
             newFormat.append(str.charAt(i));
         }
         return newFormat.toString();
+    }
+
+    private String formatChat(String str, Player p) {
+        str = str.replace("%2$s", "");
+        str = str.replace("%1$s", p.getDisplayName());
+        hasFinalSpace = String.valueOf(str.charAt(str.length() - 1)).equalsIgnoreCase(" ");
+        str = str.trim();
+        str = checkForEssentialsFormatting(str);
+        str = plugin.colors.chatColor(str);
+        return str.trim();
+    }
+    private String formatMessage(String str, String format) {
+        str = plugin.colors.finalChatColor(format) + str; // Add chat color
+        str = plugin.colors.chatColor(str);
+        return str.replace("%2$s", str);
+    }
+
+    private TextComponent formatHoverMessage(String format, String message, Player p) {
+        TextComponent mainMessage = new TextComponent();
+        TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(p, plugin.colors.chatColor(format));
+        TextComponent eMessage;
+
+        if (hasFinalSpace) {
+            eMessage = new TextComponent(TextComponent.fromLegacyText(" " + message));
+        } else {
+            eMessage = new TextComponent(TextComponent.fromLegacyText(message));
+        }
+
+        mainMessage.addExtra(hoverEvents);
+        mainMessage.addExtra(eMessage);
+        return mainMessage;
+    }
+
+    private void sendHoverMessage(Set<Player> recipients, String format, String message, Player p) {
+        TextComponent hoverMessage = formatHoverMessage(format, message, p);
+
+        for (Player player : recipients) {
+            player.spigot().sendMessage(hoverMessage);
+        }
     }
 }

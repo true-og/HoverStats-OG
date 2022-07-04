@@ -35,8 +35,10 @@ public final class HoverStats extends JavaPlugin {
         saveDefaultConfig();
         // Setup classes
         setupClasses();
-        // Check if Depends are loaded
+        // Check if Depends on are loaded
         checkDependentPlugins();
+        // Check that the config is correct
+        checkConfig();
     }
 
     private void setupClasses() {
@@ -49,6 +51,18 @@ public final class HoverStats extends JavaPlugin {
         hoverUtils = new HoverUtils();
         CommandUtils.init();
         EventUtils.init();
+    }
+
+    private void checkConfig() {
+        if (!variable.useChatFormatting) {
+            return;
+        }
+        if (!variable.chatFormatting.contains("%message%")) {
+            getLogger().severe("Could not find \"%message%\" in the chat format. Please take a look to ensure that it is included, chat formatting will not be used.");
+            getConfig().set("Chat Formatting.Use Formatting", false);
+            saveDefaultConfig();
+            saveConfig();
+        }
     }
 
     private void checkDependentPlugins() {
@@ -70,6 +84,8 @@ public final class HoverStats extends JavaPlugin {
         reloadConfig();
         // Save config with comments
         saveDefaultConfig();
+        // Save config
+        saveConfig();
 
 
         if (sender instanceof Player) {

@@ -35,4 +35,7 @@ public class Variable {
     public String placeholderPlaceholder() {
         return plugin.getConfig().getString("Placeholders.Placeholder Filler");
     }
+
+    public boolean useChatFormatting = plugin.getConfig().getBoolean("Chat Formatting.Use Formatting");
+    public String chatFormatting = plugin.getConfig().getString("Chat Formatting.Format");
 }

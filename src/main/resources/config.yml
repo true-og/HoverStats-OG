@@ -1,8 +1,8 @@
-######################################################################
-#                                                                    #
-#                             Config.yml                             #
-#                                                                    #
-######################################################################
+# #################################################################### #
+#                                                                      #
+#                              Config.yml                              #
+#                                                                      #
+# #################################################################### #
 
 # Set this to true if you want to use placeholderAPI in the plugin
 PAPI hook: true
@@ -19,29 +19,44 @@ Placeholders:
   Command Name: "HoverStats"
   Placeholder Filler: "0" # Set the default placeholder for any placeholders that are empty or equal "null"
 
-######################################################################
-#                        List of placeholders                        #
-######################################################################
-#                                                                    #
-#                   Prefix       -       %prefix%                    #
-#                    Error       -       %error%                     #
-#                  Success       -       %success%                   #
-#              Plugin Name       -       %pluginname%                #
-#             Command Name       -       %cmdName%                   #
-#                   Player       -       %player%                    #
-#                                                                    #
-#                                                                    #
-#                          * Disclaimer *                            #
-#                 Player may not work for certain                    #
-#                             messages                               #
-#                                                                    #
-######################################################################
+# #################################################################### #
+#                         List of placeholders                         #
+# #################################################################### #
+#                                                                      #
+#                    Prefix       -       %prefix%                     #
+#                     Error       -       %error%                      #
+#                   Success       -       %success%                    #
+#               Plugin Name       -       %pluginname%                 #
+#              Command Name       -       %cmdName%                    #
+#                    Player       -       %player%                     #
+#                                                                      #
+#                                                                      #
+#                           * Disclaimer *                             #
+#                  Player may not work for certain                     #
+#                              messages                                #
+#                                                                      #
+# #################################################################### #
 
-######################################################################
-#                                                                    #
-#                              Messages                              #
-#                                                                    #
-######################################################################
+Chat Formatting:
+  # Setting this to false will make it so that another plugin will take control
+  # of the chat. Setting this to true will use the formatting below
+  Use Formatting: true
+  # Set the format of the in game chat
+  #
+  # Note: You must include "%message%" at some point in your message format.
+  # Failure to do so will result in the plugin setting use formatting to false
+  # Color is gotten from the final part of the format for the chat. So please
+  # ensure that there is nothing after "%message%" that has a different color.
+  # Anything that is put after the "%message%" will also be put before the
+  # actual message in game.
+  Format: "&7%displayname% &8&l> &7%message%"
+
+
+# #################################################################### #
+#                                                                      #
+#                               Messages                               #
+#                                                                      #
+# #################################################################### #
 Messages:
   System Messages:
     Success:
@@ -62,21 +77,15 @@ Messages:
     - "&7&l&m⎯⎯⎯⎯⎯⎯&r &a&l%pluginname% Help &r&7&l&m⎯⎯⎯⎯⎯⎯&r"
     - ""
 
-######################################################################
-#                                                                    #
-#                          Hover Messages                            #
-#                                                                    #
-######################################################################
+# #################################################################### #
+#                                                                      #
+#                           Hover Messages                             #
+#                                                                      #
+# #################################################################### #
 Hover:
   Stats:
     - "&e&l%player%'s Stats:"
     - ""
-    - "&b&lBALANCE:"
-    - "%vault_eco_balance_formatted%"
-    - "&b&lGANG KILLS:"
-    - "%gangsplus_gang_kills%"
-    - "&b&lBLOCKS MINED:"
-    - "%pickaxecounter_blocks%"
     - "&b&lJoin Date:"
     - "%statstracker_first_joined%"
     - ""
