@@ -87,7 +87,7 @@ Hover:
     - "&e&l%player%'s Stats:"
     - ""
     - "&b&lJoin Date:"
-    - "%statstracker_first_joined%"
+    - "%first_joined%"
     - ""
     - "&e&lClick this to message player"
   Stats Click Command: "/msg %player% "

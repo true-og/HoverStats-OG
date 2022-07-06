@@ -14,14 +14,8 @@ public class Variable {
         if (path.isEmpty()) {
             path.add("&e&l%player%'s Stats:");
             path.add("");
-            path.add("&3&lBALANCE:");
-            path.add("%vault_eco_balance_formatted%");
-            path.add("&3&lGANG KILLS:");
-            path.add("%gangsplus_gang_kills%");
-            path.add("&3&lBLOCKS MINED:");
-            path.add("%ezblocks_broken%");
             path.add("&3&lJoin Date:");
-            path.add("%statstracker_first_joined%");
+            path.add("%first_joined%");
             path.add("");
             return path;
         }
