@@ -6,7 +6,7 @@
 
     <groupId>me.Brand0n_</groupId>
     <artifactId>HoverStats</artifactId>
-    <version>2.9.3</version>
+    <version>3.0</version>
     <packaging>jar</packaging>
 
     <name>HoverStats</name>

@@ -25,17 +25,22 @@ public class HoverUtils {
     }
 
     private String formatHoverMessage(Player p, List<String> strList) {
-        String str = strList.toString();
-        str = str.trim();
-        str = str.substring(1, str.length() - 1);
-        str = str.replaceAll(", ", "\n&f");
-        str = plugin.placeholders.addPlaceholders(p, str);
-        if (str.contains("{") && str.contains("}") && str.length() > 2) {
-            str = str.replace("{", "%").replace("}", "%");
+        StringBuilder output = new StringBuilder();
+        for (int i = 0; i < strList.size(); i++) {
+            String str = strList.get(i);
+            str = plugin.placeholders.addPlaceholders(p, str);
+            if (str.contains("{") && str.contains("}") && str.length() > 2) {
+                str = str.replace("{", "%").replace("}", "%");
+            }
+            if (i < strList.size()-1) {
+                output.append(str.trim()).append("\n&r&f");
+                continue;
+            }
+            output.append(str.trim()).append("&r&f");
         }
-        if (str.equalsIgnoreCase("null") || str.isEmpty()) {
-            return plugin.variable.placeholderPlaceholder();
+        if (output.toString().equalsIgnoreCase("null") || output.toString().isEmpty()) {
+            output.append(plugin.variable.placeholderPlaceholder());
         }
-        return plugin.colors.chatColor(str);
+        return plugin.colors.chatColor(output.toString());
     }
 }
