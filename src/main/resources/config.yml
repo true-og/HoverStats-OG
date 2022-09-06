@@ -7,7 +7,7 @@
 # Set this to true if you want to use placeholderAPI in the plugin
 PAPI hook: true
 
-# Set PAPI hook to true to use all of the placeholderAPI placeholders
+# Set PAPI hook to true to use all the placeholderAPI placeholders
 # in the messages
 
 # These are the placeholders provided by the plugin
