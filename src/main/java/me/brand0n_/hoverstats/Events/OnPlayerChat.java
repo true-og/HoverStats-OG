@@ -26,13 +26,15 @@ public class OnPlayerChat implements Listener {
         }
 
         // Check if the plugin is using its own formatting
-        e.setFormat(formatChat(plugin.variable.useChatFormatting, p, e.getFormat()));
+        if (plugin.variable.useChatFormatting) {
+            e.setFormat(formatChat(p));
+        }
 
         // Format chat based on the current chat format
         String format = formatChat(e.getFormat(), p);
         String message = formatMessage(e.getMessage(), format);
 
-        e.setFormat(plugin.colors.chatColor(checkForEssentialsFormatting(e.getFormat().replace("%1$s", p.getDisplayName()))));
+        e.setFormat(plugin.placeholders.addPlaceholders(e.getPlayer(), checkForEssentialsFormatting(e.getFormat().replace("%1$s", p.getDisplayName()))));
         e.setMessage(message);
 
         // Send the player the hover able chat message
@@ -42,17 +44,12 @@ public class OnPlayerChat implements Listener {
         e.getRecipients().clear();
     }
 
-    private String formatChat(boolean useFormatting, Player p, String nativeFormatting) {
-        if (!useFormatting) {
-            return nativeFormatting;
-        }
-        String newFormatting = plugin.variable.chatFormatting;
-
-        newFormatting = newFormatting.replace("%message%", "%2$s");
-        newFormatting = newFormatting.replace("%name%", p.getName());
-        newFormatting = newFormatting.replace("%displayname%", "%1$s");
-
-        return newFormatting;
+    private String formatChat(Player p) {
+        String newFormatting = plugin.variable.chatFormatting
+                .replace("%message%", "%2$s")
+                .replace("%name%", p.getName())
+                .replace("%displayname%", "%1$s");
+        return plugin.placeholders.addPlaceholders(p, newFormatting);
     }
 
     private String checkForEssentialsFormatting(String str) {
