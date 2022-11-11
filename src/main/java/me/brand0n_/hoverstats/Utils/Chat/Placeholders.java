@@ -15,12 +15,12 @@ public class Placeholders {
         if (plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
             return false;
         }
-        plugin.variable.usePAPI = true;
+        plugin.usePAPI = true;
         return true;
     }
 
     public String addPlaceholders(Player p, String str) {
-        if (plugin.variable.usePAPI) {
+        if (plugin.usePAPI) {
             str = PlaceholderAPI.setPlaceholders(p, str);
         }
         if (p != null) {

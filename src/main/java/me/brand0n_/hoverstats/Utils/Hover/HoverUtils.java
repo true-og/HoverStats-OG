@@ -16,8 +16,18 @@ public class HoverUtils {
 
     public TextComponent setupHoverMessage(Player p, String message) {
         TextComponent mainComponent = new TextComponent(TextComponent.fromLegacyText(plugin.colors.chatColor(message)));
-        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, plugin.colors.chatColor(plugin.variable.hoverCommand().replace("%player%", p.getName()))));
-        mainComponent.setHoverEvent(formatHoverMessage(p, plugin.variable.statsHover()));
+        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, plugin.colors.chatColor(plugin.getConfig().getString("Hover.Stats Click Command", "/msg %player% ").replace("%player%", p.getName()))));
+
+        List<String> path = plugin.getConfig().getStringList("Hover.Stats");
+        if (path.isEmpty()) {
+            path.add("&e&l%player%'s Stats:");
+            path.add("");
+            path.add("&3&lJoin Date:");
+            path.add("%first_joined%");
+            path.add("");
+        }
+
+        mainComponent.setHoverEvent(formatHoverMessage(p, path));
         return mainComponent;
     }
 

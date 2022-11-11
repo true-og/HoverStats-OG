@@ -2,7 +2,7 @@ name: HoverStats
 version: '${project.version}'
 main: me.brand0n_.hoverstats.HoverStats
 api-version: 1.16
-depend: [ PlaceholderAPI ]
+softdepend:  [ PlaceholderAPI ]
 authors: [ Brand0n_ ]
 description: Add a hover effect over the players message in chat saying some key stats
 

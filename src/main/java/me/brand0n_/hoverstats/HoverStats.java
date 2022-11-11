@@ -7,7 +7,6 @@ import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
 import me.brand0n_.hoverstats.Utils.Help.HelpUtils;
 import me.brand0n_.hoverstats.Utils.Hover.HoverUtils;
-import me.brand0n_.hoverstats.Utils.Variables.Variable;
 import me.brand0n_.hoverstats.Utils.Version.VersionUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -19,7 +18,6 @@ public final class HoverStats extends JavaPlugin {
 
     // Setup Classes
     public VersionUtils version;
-    public Variable variable;
     public Colors colors;
     public Placeholders placeholders;
     public HelpUtils helpUtils;
@@ -35,8 +33,8 @@ public final class HoverStats extends JavaPlugin {
         saveDefaultConfig();
         // Setup classes
         setupClasses();
-        // Check if Depends on are loaded
-        checkDependentPlugins();
+        // Check if SoftDepends on are loaded
+        checkSoftDependentPlugins();
         // Check that the config is correct
         checkConfig();
     }
@@ -54,10 +52,10 @@ public final class HoverStats extends JavaPlugin {
     }
 
     private void checkConfig() {
-        if (!variable.useChatFormatting) {
+        if (!getConfig().getBoolean("Chat Formatting.Use Formatting", true)) {
             return;
         }
-        if (!variable.chatFormatting.contains("%message%")) {
+        if (!getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%").contains("%message%")) {
             getLogger().severe("Could not find \"%message%\" in the chat format. Please take a look to ensure that it is included, chat formatting will not be used.");
             getConfig().set("Chat Formatting.Use Formatting", false);
             saveDefaultConfig();
@@ -65,8 +63,7 @@ public final class HoverStats extends JavaPlugin {
         }
     }
 
-    private void checkDependentPlugins() {
-        variable = new Variable();
+    private void checkSoftDependentPlugins() {
         // Check if the plugin should try to hook into placeholderAPI
         if (usePAPI) {
             // Check if the PlaceholderAPI is installed
@@ -74,7 +71,7 @@ public final class HoverStats extends JavaPlugin {
                 getLogger().info(messages.papiHookSuccess());
             } else {
                 getLogger().severe(messages.papiHookFailed());
-                getServer().getPluginManager().disablePlugin(this);
+                usePAPI = false;
             }
         }
     }

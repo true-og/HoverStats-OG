@@ -16,7 +16,7 @@ public class OnPlayerChat implements Listener {
     private boolean hasFinalSpace = false;
 
     // Setting the Event Priority to Highest it makes it so the plugin has the final say in the chat event.
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
 
@@ -26,15 +26,13 @@ public class OnPlayerChat implements Listener {
         }
 
         // Check if the plugin is using its own formatting
-        if (plugin.variable.useChatFormatting) {
+        if (plugin.getConfig().getBoolean("Chat Formatting.Use Formatting", true)) {
             e.setFormat(formatChat(p));
         }
 
         // Format chat based on the current chat format
         String format = formatChat(e.getFormat(), p);
         String message = formatMessage(e.getMessage(), format);
-
-        e.setFormat(plugin.placeholders.addPlaceholders(e.getPlayer(), checkForEssentialsFormatting(e.getFormat().replace("%1$s", p.getDisplayName()))));
         e.setMessage(message);
 
         // Send the player the hover able chat message
@@ -45,11 +43,11 @@ public class OnPlayerChat implements Listener {
     }
 
     private String formatChat(Player p) {
-        String newFormatting = plugin.variable.chatFormatting
+        String newFormatting = plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%")
                 .replace("%message%", "%2$s")
                 .replace("%name%", p.getName())
                 .replace("%displayname%", "%1$s");
-        return plugin.placeholders.addPlaceholders(p, newFormatting);
+        return plugin.placeholders.addPlaceholders(p, newFormatting).replace("§", "&");
     }
 
     private String checkForEssentialsFormatting(String str) {
@@ -101,9 +99,9 @@ public class OnPlayerChat implements Listener {
         TextComponent eMessage;
 
         if (hasFinalSpace) {
-            eMessage = new TextComponent(TextComponent.fromLegacyText(" " + message));
+            eMessage = new TextComponent(TextComponent.fromLegacyText(" " + message.replace("%2$s", "")));
         } else {
-            eMessage = new TextComponent(TextComponent.fromLegacyText(message));
+            eMessage = new TextComponent(TextComponent.fromLegacyText(message.replace("%2$s", "")));
         }
 
         mainMessage.addExtra(hoverEvents);
