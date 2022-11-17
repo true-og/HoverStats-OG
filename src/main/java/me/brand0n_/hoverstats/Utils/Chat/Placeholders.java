@@ -21,7 +21,7 @@ public class Placeholders {
 
     public String addPlaceholders(Player p, String str) {
         if (plugin.usePAPI) {
-            str = PlaceholderAPI.setPlaceholders(p, str);
+            str = PlaceholderAPI.setPlaceholders(p, PlaceholderAPI.setBracketPlaceholders(p, str));
         }
         if (p != null) {
             Date date = new Date(p.getFirstPlayed());

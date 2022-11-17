@@ -27,73 +27,54 @@ public class OnPlayerChat implements Listener {
 
         // Check if the plugin is using its own formatting
         if (plugin.getConfig().getBoolean("Chat Formatting.Use Formatting", true)) {
-            e.setFormat(formatChat(p));
+            String newFormatting = getNewFormatting(p, plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%"));
+            e.setFormat(plugin.placeholders.addPlaceholders(p, newFormatting));
         }
 
         // Format chat based on the current chat format
-        String format = formatChat(e.getFormat(), p);
+        String format = formatChat(p, e.getFormat());
         String message = formatMessage(e.getMessage(), format);
         e.setMessage(message);
-
         // Send the player the hover able chat message
-        sendHoverMessage(e.getRecipients(), format, e.getMessage(), p);
+        sendHoverMessage(p, e.getRecipients(), format, e.getMessage());
 
-        // Make is so the second message is not sent
+        // Make sure the player doesn't get the message twice
         e.getRecipients().clear();
     }
 
-    private String formatChat(Player p) {
-        String newFormatting = plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%")
-                .replace("%message%", "%2$s")
-                .replace("%name%", p.getName())
-                .replace("%displayname%", "%1$s");
-        return plugin.placeholders.addPlaceholders(p, newFormatting).replace("§", "&");
-    }
-
-    private String checkForEssentialsFormatting(String str) {
-        StringBuilder newFormat = new StringBuilder();
-
-        for (int i = 0; i < str.length(); i++) {
-            String character = String.valueOf(str.charAt(i));
-            if (character.equalsIgnoreCase("{")) {
-                if ((i + 1 < str.length())) {
-                    String nextCharacter = String.valueOf(str.charAt(i + 1));
-                    if (!nextCharacter.equalsIgnoreCase(" ") && !nextCharacter.equalsIgnoreCase("}")) {
-                        newFormat.append("%");
-                        continue;
-                    }
-                }
+    private String getNewFormatting(Player p, String str) {
+        StringBuilder stringBuffer = new StringBuilder();
+        for (String formattedString : str.split(" ")) {
+            if (formattedString.equalsIgnoreCase("%1$s") || formattedString.equalsIgnoreCase("%2$s")) {
+                continue;
             }
-            if (String.valueOf(str.charAt(i)).equalsIgnoreCase("}")) {
-                if (!(i - 1 <= 0)) {
-                    String lastCharacter = String.valueOf(str.charAt(i - 1));
-                    if (!lastCharacter.equalsIgnoreCase(" ") && !lastCharacter.equalsIgnoreCase("{")) {
-                        newFormat.append("%");
-                        continue;
-                    }
-                }
-            }
-            newFormat.append(str.charAt(i));
+            formattedString = formattedString.replaceFirst("%", "{")
+                    .replace("%", "}");
+            stringBuffer.append(formattedString);
+            stringBuffer.append(" ");
         }
-        return newFormat.toString();
+        return stringBuffer.toString().trim()
+                .replace("{message}", "%2$s")
+                .replace("{name}", p.getName())
+                .replace("{displayname}", "%1$s");
     }
 
-    private String formatChat(String str, Player p) {
+    private String formatChat(Player p, String str) {
         str = str.replace("%2$s", "");
         str = str.replace("%1$s", p.getDisplayName());
         hasFinalSpace = String.valueOf(str.charAt(str.length() - 1)).equalsIgnoreCase(" ");
         str = str.trim();
-        str = checkForEssentialsFormatting(str);
         str = plugin.colors.chatColor(str);
         return str.trim();
     }
+
     private String formatMessage(String str, String format) {
         str = plugin.colors.finalChatColor(format) + str; // Add chat color
         str = plugin.colors.chatColor(str);
         return str.replace("%2$s", str);
     }
 
-    private TextComponent formatHoverMessage(String format, String message, Player p) {
+    private TextComponent formatHoverMessage(Player p, String format, String message) {
         TextComponent mainMessage = new TextComponent();
         TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(p, plugin.colors.chatColor(format));
         TextComponent eMessage;
@@ -109,8 +90,8 @@ public class OnPlayerChat implements Listener {
         return mainMessage;
     }
 
-    private void sendHoverMessage(Set<Player> recipients, String format, String message, Player p) {
-        TextComponent hoverMessage = formatHoverMessage(format, message, p);
+    private void sendHoverMessage(Player p, Set<Player> recipients, String format, String message) {
+        TextComponent hoverMessage = formatHoverMessage(p, format, message);
 
         for (Player player : recipients) {
             player.spigot().sendMessage(hoverMessage);
