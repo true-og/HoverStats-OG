@@ -1,5 +1,5 @@
 name: HoverStats
-version: '${project.version}'
+version: '${project.version} BETA 3.5'
 main: me.brand0n_.hoverstats.HoverStats
 api-version: 1.16
 softdepend:  [ PlaceholderAPI ]

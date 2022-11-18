@@ -21,7 +21,24 @@ public class Placeholders {
 
     public String addPlaceholders(Player p, String str) {
         if (plugin.usePAPI) {
-            str = PlaceholderAPI.setPlaceholders(p, PlaceholderAPI.setBracketPlaceholders(p, str));
+            str = PlaceholderAPI.setPlaceholders(p, str);
+        }
+        if (p != null) {
+            Date date = new Date(p.getFirstPlayed());
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm:ss");
+
+            str = str.replace("%player%", p.getName())
+                    .replace("%first_joined%", sdf.format(date))
+                    .replace("%displayname%", p.getDisplayName())
+                    .replace("%username%", p.getName())
+                    .replace("%world%", p.getWorld().getName());
+        }
+        return formatPlaceholders(str);
+    }
+
+    public String addBracketPlaceholders(Player p, String str) {
+        if (plugin.usePAPI) {
+            str = PlaceholderAPI.setBracketPlaceholders(p, str);
         }
         if (p != null) {
             Date date = new Date(p.getFirstPlayed());
@@ -34,7 +51,7 @@ public class Placeholders {
     }
 
     public String formatPlaceholders(String msg) {
-        return plugin.colors.chatColor(msg
+        return Colors.chatColor(msg
                 .replace("%prefix%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Prefix")))
                 .replace("%error%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Error")))
                 .replace("%success%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Success")))

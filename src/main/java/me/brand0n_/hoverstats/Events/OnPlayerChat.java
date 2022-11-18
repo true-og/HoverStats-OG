@@ -1,6 +1,7 @@
 package me.brand0n_.hoverstats.Events;
 
 import me.brand0n_.hoverstats.HoverStats;
+import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +17,7 @@ public class OnPlayerChat implements Listener {
     private boolean hasFinalSpace = false;
 
     // Setting the Event Priority to Highest it makes it so the plugin has the final say in the chat event.
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
 
@@ -28,11 +29,11 @@ public class OnPlayerChat implements Listener {
         // Check if the plugin is using its own formatting
         if (plugin.getConfig().getBoolean("Chat Formatting.Use Formatting", true)) {
             String newFormatting = getNewFormatting(p, plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%"));
-            e.setFormat(plugin.placeholders.addPlaceholders(p, newFormatting));
+            e.setFormat(plugin.placeholders.addBracketPlaceholders(p, newFormatting));
         }
 
         // Format chat based on the current chat format
-        String format = formatChat(p, e.getFormat());
+        String format = formatChat(p, e.getFormat()).replace("{", "%").replace("}", "%");
         String message = formatMessage(e.getMessage(), format);
         e.setMessage(message);
         // Send the player the hover able chat message
@@ -43,20 +44,45 @@ public class OnPlayerChat implements Listener {
     }
 
     private String getNewFormatting(Player p, String str) {
-        StringBuilder stringBuffer = new StringBuilder();
+        StringBuilder newStr = new StringBuilder();
+        str = str
+                .replace("%message%", "%2$s")
+                .replace("%name%", p.getName())
+                .replace("%displayname%", "%1$s");
+
+        str = Colors.chatColor(str);
+
         for (String formattedString : str.split(" ")) {
-            if (formattedString.equalsIgnoreCase("%1$s") || formattedString.equalsIgnoreCase("%2$s")) {
+            if (formattedString.equalsIgnoreCase("") || formattedString.equalsIgnoreCase(" ")) {
                 continue;
             }
-            formattedString = formattedString.replaceFirst("%", "{")
-                    .replace("%", "}");
-            stringBuffer.append(formattedString);
-            stringBuffer.append(" ");
+
+            if (formattedString.contains("{") && formattedString.contains("}")) {
+                formattedString = formattedString.replace("{", "%").replace("}", "%");
+            }
+            for (String tempString : formattedString.split("%")) {
+                if (tempString.equalsIgnoreCase("")) {
+                    continue;
+                }
+                if (tempString.equalsIgnoreCase(" ")) {
+                    newStr.append(tempString);
+                    continue;
+                }
+                if (tempString.contains("§")) {
+                    // Is color code
+                    newStr.append(tempString);
+                    continue;
+                }
+
+                if (tempString.equalsIgnoreCase("1$s") || tempString.equalsIgnoreCase("2$s")) {
+                    newStr.append("%").append(tempString);
+                    continue;
+                }
+                newStr.append("{").append(tempString).append("}");
+            }
+            newStr.append(" ");
         }
-        return stringBuffer.toString().trim()
-                .replace("{message}", "%2$s")
-                .replace("{name}", p.getName())
-                .replace("{displayname}", "%1$s");
+        return plugin.placeholders.addPlaceholders(p, newStr.toString().trim());
     }
 
     private String formatChat(Player p, String str) {
@@ -64,19 +90,19 @@ public class OnPlayerChat implements Listener {
         str = str.replace("%1$s", p.getDisplayName());
         hasFinalSpace = String.valueOf(str.charAt(str.length() - 1)).equalsIgnoreCase(" ");
         str = str.trim();
-        str = plugin.colors.chatColor(str);
+        str = Colors.chatColor(str);
         return str.trim();
     }
 
     private String formatMessage(String str, String format) {
-        str = plugin.colors.finalChatColor(format) + str; // Add chat color
-        str = plugin.colors.chatColor(str);
+        str = Colors.finalChatColor(format) + str; // Add chat color
+        str = Colors.chatColor(str);
         return str.replace("%2$s", str);
     }
 
     private TextComponent formatHoverMessage(Player p, String format, String message) {
         TextComponent mainMessage = new TextComponent();
-        TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(p, plugin.colors.chatColor(format));
+        TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(p, Colors.chatColor(format));
         TextComponent eMessage;
 
         if (hasFinalSpace) {

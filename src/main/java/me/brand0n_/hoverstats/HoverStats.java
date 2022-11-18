@@ -41,7 +41,6 @@ public final class HoverStats extends JavaPlugin {
 
     private void setupClasses() {
         getInstance = this;
-        colors = new Colors();
         version = new VersionUtils();
         placeholders = new Placeholders();
         helpUtils = new HelpUtils();
@@ -66,7 +65,7 @@ public final class HoverStats extends JavaPlugin {
     private void checkSoftDependentPlugins() {
         // Check if the plugin should try to hook into placeholderAPI
         if (usePAPI) {
-            // Check if the PlaceholderAPI is installed
+            // Check if PlaceholderAPI is installed
             if (placeholders.hasPAPI()) {
                 getLogger().info(messages.papiHookSuccess());
             } else {

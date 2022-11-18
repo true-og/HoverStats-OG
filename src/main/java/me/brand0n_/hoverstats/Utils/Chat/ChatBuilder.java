@@ -41,7 +41,6 @@ public class ChatBuilder {
         }
         return plugin.placeholders.formatPlaceholders(path);
     }
-
     public String papiHookFailed() {
         String path = plugin.getConfig().getString("Messages.System Messages.Error.PAPI Hook");
         if (path == null) {
