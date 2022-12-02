@@ -11,7 +11,7 @@ import java.util.Objects;
 public class Placeholders {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
-    public boolean hasPAPI() {
+    public static boolean hasPAPI() {
         if (plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
             return false;
         }
@@ -19,7 +19,7 @@ public class Placeholders {
         return true;
     }
 
-    public String addPlaceholders(Player p, String str) {
+    public static String addPlaceholders(Player p, String str) {
         if (plugin.usePAPI) {
             str = PlaceholderAPI.setPlaceholders(p, str);
         }
@@ -36,7 +36,7 @@ public class Placeholders {
         return formatPlaceholders(str);
     }
 
-    public String addBracketPlaceholders(Player p, String str) {
+    public static String addBracketPlaceholders(Player p, String str) {
         if (plugin.usePAPI) {
             str = PlaceholderAPI.setBracketPlaceholders(p, str);
         }
@@ -50,7 +50,7 @@ public class Placeholders {
         return formatPlaceholders(str);
     }
 
-    public String formatPlaceholders(String msg) {
+    public static String formatPlaceholders(String msg) {
         return Colors.chatColor(msg
                 .replace("%prefix%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Prefix")))
                 .replace("%error%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Error")))

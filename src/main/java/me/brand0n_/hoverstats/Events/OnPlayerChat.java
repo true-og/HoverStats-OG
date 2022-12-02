@@ -2,23 +2,31 @@ package me.brand0n_.hoverstats.Events;
 
 import me.brand0n_.hoverstats.HoverStats;
 import me.brand0n_.hoverstats.Utils.Chat.Colors;
+import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
+import me.brand0n_.hoverstats.Utils.Hover.HoverUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.*;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.plugin.EventExecutor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public class OnPlayerChat implements Listener {
+public class OnPlayerChat implements EventExecutor, Listener {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     private boolean hasFinalSpace = false;
 
-    // Setting the Event Priority to Highest it makes it so the plugin has the final say in the chat event.
-    @EventHandler(priority = EventPriority.HIGHEST)
+
+    @Override
+    public void execute(@NotNull Listener listener, @NotNull Event event) {
+        this.onPlayerChat((AsyncPlayerChatEvent) event);
+    }
+
+    @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e) {
+        // Get the player
         Player p = e.getPlayer();
 
         // For plugin compatibility check if the event is cancelled by another plugin.
@@ -29,7 +37,7 @@ public class OnPlayerChat implements Listener {
         // Check if the plugin is using its own formatting
         if (plugin.getConfig().getBoolean("Chat Formatting.Use Formatting", true)) {
             String newFormatting = getNewFormatting(p, plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%"));
-            e.setFormat(plugin.placeholders.addBracketPlaceholders(p, newFormatting));
+            e.setFormat(Placeholders.addBracketPlaceholders(p, newFormatting));
         }
 
         // Format chat based on the current chat format
@@ -82,7 +90,7 @@ public class OnPlayerChat implements Listener {
             }
             newStr.append(" ");
         }
-        return plugin.placeholders.addPlaceholders(p, newStr.toString().trim());
+        return Placeholders.addPlaceholders(p, newStr.toString().trim());
     }
 
     private String formatChat(Player p, String str) {
@@ -102,7 +110,7 @@ public class OnPlayerChat implements Listener {
 
     private TextComponent formatHoverMessage(Player p, String format, String message) {
         TextComponent mainMessage = new TextComponent();
-        TextComponent hoverEvents = plugin.hoverUtils.setupHoverMessage(p, Colors.chatColor(format));
+        TextComponent hoverEvents = HoverUtils.setupHoverMessage(p, Colors.chatColor(format));
         TextComponent eMessage;
 
         if (hasFinalSpace) {

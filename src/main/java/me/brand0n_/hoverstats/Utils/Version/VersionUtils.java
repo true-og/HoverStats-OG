@@ -5,9 +5,9 @@ import org.bukkit.Bukkit;
 import java.util.ArrayList;
 
 public class VersionUtils {
-    private final ArrayList<String> versions = new ArrayList<>();
+    private static final ArrayList<String> versions = new ArrayList<>();
 
-    public boolean isCorrectVersionHex() {
+    public static boolean isCorrectVersionHex() {
         // Setup global versions variable
         addVersions();
         // Check if version is correct
@@ -19,9 +19,9 @@ public class VersionUtils {
         return false;
     }
 
-    private void addVersions() {
+    private static void addVersions() {
         int minValue = 16;
-        int maxValue = 18;
+        int maxValue = 100;
         for (int i = minValue; i <= maxValue; i++) {
             versions.add("1." + i);
         }

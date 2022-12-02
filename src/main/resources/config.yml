@@ -3,6 +3,8 @@
 #                              Config.yml                              #
 #                                                                      #
 # #################################################################### #
+# Do not change this
+Version: ${project.version}
 
 # Set this to true if you want to use placeholderAPI in the plugin
 PAPI hook: true
@@ -37,6 +39,15 @@ Placeholders:
 #                                                                      #
 # #################################################################### #
 
+# Set the priority at which the chat event will run. Setting this can fix
+# Compatibility issues with other plugins
+#
+# Note: You can find a list of event priorities at the link below:
+# https://bukkit.fandom.com/wiki/Event_API_Reference#Event_Priorities
+#
+# Note: After changing this value, the server must be reloaded/restarted
+Event Priority: HIGH # Defaults to HIGH
+
 Chat Formatting:
   # Setting this to false will make it so that another plugin will take control
   # of the chat. Setting this to true will use the formatting below
@@ -49,7 +60,7 @@ Chat Formatting:
   # ensure that there is nothing after "%message%" that has a different color.
   # Anything that is put after the "%message%" will also be put before the
   # actual message in game.
-  Format: "&7%displayname% &8&l> &7%message%"
+  Format: "#e8e9eb%displayname% &8&l> &7%message%"
 
 
 # #################################################################### #
@@ -86,8 +97,8 @@ Hover:
   Stats:
     - "&e&l%player%'s Stats:"
     - ""
-    - "&b&lJoin Date:"
-    - "%first_joined%"
+    - "&e&lJoin Date:"
+    - "#556DC8%first_joined%"
     - ""
     - "&e&lClick this to message player"
   Stats Click Command: "/msg %player% "
