@@ -2,6 +2,7 @@ package me.brand0n_.hoverstats;
 
 import me.brand0n_.hoverstats.Commands.CommandUtils;
 import me.brand0n_.hoverstats.Events.EventUtils;
+import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import me.brand0n_.hoverstats.Utils.Chat.Messages;
 import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
 import me.brand0n_.hoverstats.Utils.Config.ConfigChecks;
@@ -15,9 +16,12 @@ public final class HoverStats extends JavaPlugin {
 
     // Variable
     public boolean usePAPI = this.getConfig().getBoolean("PAPI hook");
+    public boolean useHex = false;
 
     @Override
     public void onEnable() {
+        // Check hex version
+        useHex = Colors.isCorrectVersionHex();
         // Check if the config has updates
         ConfigChecks.checkUpdates(true, "Event Priority");
         // Save the config

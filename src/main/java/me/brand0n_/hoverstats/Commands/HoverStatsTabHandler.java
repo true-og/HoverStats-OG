@@ -15,15 +15,11 @@ public class HoverStatsTabHandler implements TabCompleter {
         final List<String> result = new ArrayList<>();
 
         if (args.length == 1) {
-            switch (args[0].toLowerCase()) {
-                case "help":
-                    if (Permissions.hasPermission(sender, "hoverstats.help")) {
-                        result.add("help");
-                    }
-                case "reload":
-                    if (Permissions.hasPermission(sender, "hoverstats.reload")) {
-                        result.add("reload");
-                    }
+            if (Permissions.hasPermission(sender, "hoverstats.help")) {
+                result.add("help");
+            }
+            if (Permissions.hasPermission(sender, "hoverstats.reload")) {
+                result.add("reload");
             }
         }
         if (result.isEmpty()) {

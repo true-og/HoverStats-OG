@@ -12,6 +12,7 @@ import org.bukkit.plugin.EventExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
+import java.util.regex.Matcher;
 
 public class OnPlayerChat implements EventExecutor, Listener {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
@@ -73,6 +74,11 @@ public class OnPlayerChat implements EventExecutor, Listener {
                     continue;
                 }
                 if (tempString.equalsIgnoreCase(" ")) {
+                    newStr.append(tempString);
+                    continue;
+                }
+                Matcher match = Colors.hexPattern.matcher(tempString);
+                if (match.find()) {
                     newStr.append(tempString);
                     continue;
                 }
