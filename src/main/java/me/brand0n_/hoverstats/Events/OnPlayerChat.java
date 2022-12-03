@@ -6,13 +6,14 @@ import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
 import me.brand0n_.hoverstats.Utils.Hover.HoverUtils;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
-import java.util.regex.Matcher;
 
 public class OnPlayerChat implements EventExecutor, Listener {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
@@ -45,6 +46,7 @@ public class OnPlayerChat implements EventExecutor, Listener {
         String format = formatChat(p, e.getFormat()).replace("{", "%").replace("}", "%");
         String message = formatMessage(e.getMessage(), format);
         e.setMessage(message);
+
         // Send the player the hover able chat message
         sendHoverMessage(p, e.getRecipients(), format, e.getMessage());
 
@@ -77,8 +79,11 @@ public class OnPlayerChat implements EventExecutor, Listener {
                     newStr.append(tempString);
                     continue;
                 }
-                Matcher match = Colors.hexPattern.matcher(tempString);
-                if (match.find()) {
+                if (Colors.standardHexPattern.matcher(tempString).find()) {
+                    newStr.append(tempString);
+                    continue;
+                }
+                if (Colors.bracketHexPattern.matcher(tempString).find()) {
                     newStr.append(tempString);
                     continue;
                 }
@@ -110,13 +115,12 @@ public class OnPlayerChat implements EventExecutor, Listener {
 
     private String formatMessage(String str, String format) {
         str = Colors.finalChatColor(format) + str; // Add chat color
-        str = Colors.chatColor(str);
         return str.replace("%2$s", str);
     }
 
     private TextComponent formatHoverMessage(Player p, String format, String message) {
         TextComponent mainMessage = new TextComponent();
-        TextComponent hoverEvents = HoverUtils.setupHoverMessage(p, Colors.chatColor(format));
+        TextComponent hoverEvents = HoverUtils.setupHoverMessage(p, format);
         TextComponent eMessage;
 
         if (hasFinalSpace) {

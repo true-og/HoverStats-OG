@@ -26,9 +26,10 @@ public class HoverUtils {
         if (path.isEmpty()) {
             path.add("&e&l%player%'s Stats:");
             path.add("");
-            path.add("&3&lJoin Date:");
-            path.add("%first_joined%");
+            path.add("&e&lJoin Date:");
+            path.add("#556DC8%first_joined%");
             path.add("");
+            path.add("&e&lClick this to message player");
         }
 
         mainComponent.setHoverEvent(formatHoverMessage(p, path));
@@ -37,7 +38,7 @@ public class HoverUtils {
 
     private static HoverEvent formatHoverMessage(Player p, List<String> strList) {
         HoverEvent finalOutput = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ArrayList<>());
-
+        
         for (int i = 0; i < strList.size(); i++) {
             String output = ChatColor.RESET + strList.get(i);
             output = output.replace("[", "").replace("]", "");
