@@ -6,6 +6,11 @@
 # Do not change this
 Version: ${project.version}
 
+# Enable debug mode
+# Enabling this may result in your console being spammed with message about the plugin
+# Only enable this if you want to learn more about the plugin, or are told to by support staff
+Debug Mode: false # Defaults to false
+
 # Set this to true if you want to use placeholderAPI in the plugin
 PAPI hook: true
 
@@ -46,7 +51,46 @@ Placeholders:
 # https://bukkit.fandom.com/wiki/Event_API_Reference#Event_Priorities
 #
 # Note: After changing this value, the server must be reloaded/restarted
-Event Priority: HIGH # Defaults to HIGH
+Chat Event Priority: HIGH # Defaults to HIGH
+Join Event Priority: HIGH # Defaults to HIGH
+Quit Event Priority: HIGH # Defaults to HIGH
+
+# Set all the different hex patterns you want to support in your chat
+Hex Patterns:
+  # The default names for each of the hex codes is purely for aesthetics
+  "#ffffff": # Set a unique name for the hex code
+    Prefix: "#" # Set what prefix the plugin should look for
+    Suffix: "" # Set the suffix that the plugin should look for
+
+  "&#ffffff":
+    Prefix: "&#"
+    Suffix: ""
+
+  "<#ffffff>":
+    Prefix: "<#"
+    Suffix: ">"
+
+# Set the global date format
+Date Format: "MM/dd/yy hh:mm:ss"
+
+Join Formatting:
+  # Setting this to false will make it so that either another plugin or default
+  # minecraft will take control over the server's join messages. Setting this
+  # to true will use the formatting below
+  Use Formatting: true
+  # Set the format of the message when the player joins the server
+  Join Message Format: "&8[&a+&8] &7%displayname%"
+  # Set the format of the message sent when the player first joins the server
+  First Join Message Format: "&7Welcome &b%displayname%&7 to the server!"
+
+Quit Formatting:
+  # Setting this to false will make it so that either another plugin or default
+  # minecraft will take control over the server's leave messages. Setting this
+  # to true will use the formatting below
+  Use Formatting: true
+  # Set the format of the message when the player leaves the server
+  Quit Message Format: "&8[&c-&8] &7%displayname%"
+
 
 Chat Formatting:
   # Setting this to false will make it so that another plugin will take control
@@ -75,7 +119,7 @@ Messages:
       Reloaded: "%success% %pluginname%'s &7config has successfully reloaded!"
 
     Error:
-      PAPI Hook: "&aCouldn't find PlaceholderAPI, all placeholders from PAPI won't work."
+      PAPI Hook: "&cCouldn't find PlaceholderAPI, any placeholders from PAPI will no longer work."
       No Permissions: "%error% &7You don't have permission to run this command!"
 
   # Default help message, you can change this if you want
@@ -94,6 +138,31 @@ Messages:
 #                                                                      #
 # #################################################################### #
 Hover:
+  First Join:
+    - "&7Welcome &b%displayname% &7to the server!"
+    - "&7We hope you enjoy your stay!"
+    - ""
+    - "&e&lClick this to say \"Welcome to the Server!\""
+  First Join Click Command: "Welcome to the Server!"
+
+  Join:
+    - "&7Welcome back &b%displayname%&7!"
+    - ""
+    - "&e&lLast Online:"
+    - "#556DC8%last_joined%"
+    - ""
+    - "&e&lClick this to say \"Welcome back\""
+  Join Click Command: "Welcome back!"
+
+  Quit:
+    - "&e&l%player%'s Stats:"
+    - ""
+    - "&e&lJoin Date:"
+    - "#556DC8%first_joined%"
+    - ""
+    - "&e&lClick this to message player"
+  Quit Click Command: "/mail %player% "
+
   Stats:
     - "&e&l%player%'s Stats:"
     - ""

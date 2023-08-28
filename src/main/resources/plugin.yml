@@ -14,6 +14,21 @@ commands:
 permissions:
   hoverstats.help:
     default: true
+  hoverstats.join-formatting:
+    default: true
+  hoverstats.leave-formatting:
+    default: true
+  hoverstats.colors.*:
+    description: This will give the player access to all chat colors
+    default: false
+  hoverstats.magic.*:
+    description: This will give the player access to all "magic" color codes
+    default: false
+  hoverstats.colors.hex:
+    description: This will give the player access to all hex colors
+    default: false
+  hoverstats.update:
+    default: op
   hoverstats.reload:
     default: false
 
@@ -21,8 +36,10 @@ permissions:
     children:
       hoverstats.help: true
       hoverstats.reload: true
+      hoverstats.update: true
   hoverstats.*:
     children:
       hoverstats.help: true
       hoverstats.reload: true
+      hoverstats.update: true
 

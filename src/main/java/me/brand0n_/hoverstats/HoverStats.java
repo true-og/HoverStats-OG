@@ -5,33 +5,40 @@ import me.brand0n_.hoverstats.Events.EventUtils;
 import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import me.brand0n_.hoverstats.Utils.Chat.Messages;
 import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
-import me.brand0n_.hoverstats.Utils.Config.ConfigChecks;
+import me.brand0n_.hoverstats.Utils.Updates.ConfigChecker;
+import me.brand0n_.hoverstats.Utils.Updates.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HoverStats extends JavaPlugin {
+    // Spigot id
+    public String resourceID = "100245";
+    // Config Version
+    public String configVersion = "5.5.6";
+
     // Plugin Instance
     public static HoverStats getInstance;
 
     // Variable
-    public boolean usePAPI = this.getConfig().getBoolean("PAPI hook");
+    public boolean usePAPI = getConfig().getBoolean("PAPI hook");
     public boolean useHex = false;
 
     @Override
     public void onEnable() {
-        // Check hex version
-        useHex = Colors.isCorrectVersionHex();
-        // Check if the config has updates
-        ConfigChecks.checkUpdates(true, "Event Priority");
         // Save the config
         saveDefaultConfig();
+        // Check hex version
+        useHex = Colors.isCorrectVersionHex();
+        // Check if the config is outdated
+        ConfigChecker.checkUpdates();
+        ConfigChecker.checkConfig();
         // Setup classes
         setupClasses();
         // Check if SoftDepends on are loaded
         checkSoftDependentPlugins();
-        // Check that the config is correct
-        ConfigChecks.checkConfig();
+        // Check if the plugin needs an update
+        UpdateChecker.sendConsoleUpdateMessage();
     }
 
     private void setupClasses() {
@@ -41,15 +48,12 @@ public final class HoverStats extends JavaPlugin {
     }
 
     private void checkSoftDependentPlugins() {
-        // Check if the plugin should try to hook into placeholderAPI
-        if (usePAPI) {
-            // Check if PlaceholderAPI is installed
-            if (Placeholders.hasPAPI()) {
-                Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] "+Messages.papiHookSuccess());
-            } else {
-                Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] "+Messages.papiHookFailed());
-                usePAPI = false;
-            }
+        // Check if PlaceholderAPI is installed
+        if (Placeholders.hasPAPI()) {
+            Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] " + Messages.papiHookSuccess());
+        } else {
+            Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] " + Messages.papiHookFailed());
+            usePAPI = false;
         }
     }
 

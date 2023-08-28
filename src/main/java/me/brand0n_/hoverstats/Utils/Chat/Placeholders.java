@@ -12,52 +12,70 @@ public class Placeholders {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     public static boolean hasPAPI() {
-        if (plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
-            return false;
+        // Check if the plugin should try to hook into PlaceholderAPI
+        if (plugin.usePAPI) {
+            // Check if the PlaceholderAPI is installed on the server, return the result
+            return plugin.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
         }
-        plugin.usePAPI = true;
-        return true;
+        // PlaceholderAPI isn't installed return false
+        return false;
     }
 
     public static String addPlaceholders(Player p, String str) {
-        if (plugin.usePAPI) {
-            str = PlaceholderAPI.setPlaceholders(p, str);
-        }
+        // Check if the player is valid
         if (p != null) {
-            Date date = new Date(p.getFirstPlayed());
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm:ss");
+            // Get the time that the player first joined the server
+            Date firstJoinDate = new Date(p.getFirstPlayed());
+            // Get the last time that the player first joined the server
+            Date lastJoinDate = new Date(p.getLastPlayed());
+            // Format the date to be in a readable format
+            SimpleDateFormat sdf = new SimpleDateFormat(plugin.getConfig().getString("Date Format", "MM/dd/yy hh:mm:ss"));
 
-            str = str.replace("%player%", p.getName())
-                    .replace("%first_joined%", sdf.format(date))
+            // Format the string with all plugin specific placeholders
+            str = str
+                    // Replace the player with the players name
+                    .replace("%player%", p.getName())
+                    // Replace the first join time with the formatted first join time
+                    .replace("%first_joined%", sdf.format(firstJoinDate))
+                    // Replace the first join time with the formatted first join time
+                    .replace("%last_joined%", sdf.format(lastJoinDate))
+                    // Replace the display name with the players display name
                     .replace("%displayname%", p.getDisplayName())
+                    // Replace the players username with the players name
                     .replace("%username%", p.getName())
+                    // Replace the world with the current world the player is in
                     .replace("%world%", p.getWorld().getName());
         }
-        return formatPlaceholders(str);
-    }
-
-    public static String addBracketPlaceholders(Player p, String str) {
-        if (plugin.usePAPI) {
+        // Check if the string has any brackets in it
+        if (str.contains("{") && str.contains("}")) {
+            // Remove any bracket placeholders with their proper formats
             str = PlaceholderAPI.setBracketPlaceholders(p, str);
         }
-        if (p != null) {
-            Date date = new Date(p.getFirstPlayed());
-            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy hh:mm:ss");
-
-            str = str.replace("%player%", p.getName());
-            str = str.replace("%first_joined%", sdf.format(date));
+        // Check if the plugin has PlaceholderAPI installed
+        if (plugin.usePAPI) {
+            // PlaceholderAPI is allowed, replace any and all PlaceholderAPI placeholders with their outputs
+            str = PlaceholderAPI.setPlaceholders(p, str);
         }
+        // Return the formatted result of the current string plugged into the rest of the plugin specific placeholders
         return formatPlaceholders(str);
     }
 
     public static String formatPlaceholders(String msg) {
+        // Make the color codes in the string result in colors
         return Colors.chatColor(msg
+                // Replace the prefix with the prefix defined in the config
                 .replace("%prefix%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Prefix")))
+                // Replace the error prefix with the error prefix defined in the config
                 .replace("%error%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Error")))
+                // Replace the success prefix with the success prefix defined in the config
                 .replace("%success%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Success")))
+                // Replace the command name with the command name defined in the config
                 .replace("%cmdname%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Command Name")))
+                // Replace the command name with the command name defined in the config (alternative formatting)
                 .replace("%cmdName%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Command Name")))
+                // Replace the plugin name with the plugin name defined in the config
                 .replace("%pluginname%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Plugin Name")))
+                // Replace the plugin name with the plugin name defined in the config (alternative formatting)
                 .replace("%pluginName%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Plugin Name"))));
     }
 }

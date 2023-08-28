@@ -6,7 +6,7 @@
 
     <groupId>me.Brand0n_</groupId>
     <artifactId>HoverStats</artifactId>
-    <version>5.1</version>
+    <version>5.5.6</version>
     <packaging>jar</packaging>
 
     <name>HoverStats</name>
@@ -40,7 +40,7 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <outputFile>E:\brand\Desktop\1.18 Test Server\plugins\${project.name}.jar</outputFile>
+                            <outputFile>E:\brand\Desktop\Minecraft\1.18 Test Server\plugins\${project.name}.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>

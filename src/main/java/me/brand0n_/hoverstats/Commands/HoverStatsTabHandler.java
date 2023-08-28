@@ -21,6 +21,9 @@ public class HoverStatsTabHandler implements TabCompleter {
             if (Permissions.hasPermission(sender, "hoverstats.reload")) {
                 result.add("reload");
             }
+            if (Permissions.hasPermission(sender, "hoverstats.version")) {
+                result.add("version");
+            }
         }
         if (result.isEmpty()) {
             return null;
