@@ -1,4 +1,4 @@
-package me.brand0n_.hoverstats.Utils.Config;
+package me.brand0n_.hoverstats.Utils.Updates;
 
 import me.brand0n_.hoverstats.HoverStats;
 import me.brand0n_.hoverstats.Utils.Chat.Colors;
@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@SuppressWarnings({"ResultOfMethodCallIgnored"})
-public class ConfigChecks {
+@SuppressWarnings({"ResultOfMethodCallIgnored", "BooleanMethodIsAlwaysInverted"})
+public class ConfigChecker {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     public static void checkConfig() {
@@ -41,16 +41,11 @@ public class ConfigChecks {
         }
     }
 
-    public static void checkUpdates(boolean wasConfigUpdates, String configChange) {
-        // Get the version saved in the config file
-        String version = plugin.getConfig().getString("Version");
-
-        // Check if the config change section is part of the config file && Check if the config is a different version then the plugin version
-        if ((plugin.getConfig().getKeys(true).contains(configChange) || (wasConfigUpdates && (version == null || !version.equalsIgnoreCase(plugin.getDescription().getVersion()))))) {
-            return;
-        }
-        // Ensure that there is something to change in the config
-        if (plugin.getConfig().getKeys(true).contains(configChange)) {
+    public static void checkUpdates() {
+        // Check if the config file exists
+        plugin.reloadConfig();
+        // Check if the plugin's config is out of date
+        if (!isOutOfDate(plugin.getConfig().getString("Version", "0"))) {
             return;
         }
         // Get the config file
@@ -60,12 +55,6 @@ public class ConfigChecks {
             // Config file doesn't exist, don't do anything.
             return;
         }
-        // Send the header to console
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[ &fConfig Update &9]⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
-        // Tell the user their config is out of date
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Configuration file out of date!"));
-        // Tell user config is being backed up
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Preserving old configuration file."));
         // Get current time
         String currDate = getDate();
         // Declare a file number
@@ -94,16 +83,11 @@ public class ConfigChecks {
             // Stop checking config
             return;
         }
-        // Tell user the file was successfully moved
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Old configuration file was successfully copied to:"));
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("                     &8(" + newConfig.getPath() + ")"));
         // Delete old config file
         if (!deleteOldConfig(newConfig)) {
             // File wasn't able to be created, stop checking config.
             return;
         }
-        // Tell the user a new config file is being made
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Creating new config file."));
         // Create the new config file
         plugin.saveDefaultConfig();
         // Reload the config
@@ -112,14 +96,29 @@ public class ConfigChecks {
         plugin.saveDefaultConfig();
         // Save config
         plugin.saveConfig();
-        // Tell the user their config data is being transferred to the newly created config file
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Syncing your settings from last config version."));
         // Sync the data with the new config file
         transferOldData(newConfig);
-        // Tell the user that the config is fully updated
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Config is fully updated."));
-        // Print barrier
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+    }
+
+
+    public static boolean isOutOfDate(String earlierVersion) {
+        // Create a variable saying if the plugin is out of date
+        boolean outOfDate = false;
+
+        // Check if the earlier version of the config is 0
+        if (earlierVersion.equals("0")) {
+            // Return true
+            return true;
+        }
+
+        // Check if the current version of the config is equal to the defined config version
+        if (!earlierVersion.equalsIgnoreCase(plugin.configVersion)) {
+            // Config is out of date, set it accordingly
+            outOfDate = true;
+        }
+
+        // Return the result of out of date
+        return outOfDate;
     }
 
     /**
@@ -184,36 +183,36 @@ public class ConfigChecks {
             // Check if the parent file exists
             if (!newFile.getParentFile().exists()) {
                 // Send message saying there was an issue with the parent file
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[ &fParent File Issue &9]⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[ &fParent File Issue &9]⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
                 // Tell user the parent file is being created
                 Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Parent file couldn't be found, attempting to create it."));
                 // Try to create the new parent directory
                 if (!newFile.getParentFile().mkdir()) {
                     // Print barrier
-                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
                     // Tell user there was an error with creating the parent directory
                     Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file! " +
                             "(Reason: Parent file couldn't be created.)"));
                     // Print barrier
-                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
                     return null;
                 }
                 // Tell the user the file was created
                 Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Parent file Created."));
                 // Print barrier
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             }
             // Create a new file for the config file
             newFile.createNewFile();
             Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Destination File created."));
         } catch (IOException e) {
             // Print barrier
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             // File failed to be moved or wasn't found, tell user
             Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file " +
                     "(Reason: Error creating new file."));
             // Print barrier
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             // Stop checking config
             return null;
         }
