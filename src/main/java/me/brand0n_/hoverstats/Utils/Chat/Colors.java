@@ -64,6 +64,9 @@ public class Colors {
             regexList.add(regexExpression.matcher(str));
         }
 
+        // Add in the standard hex format (ensuring that it is the last pattern in the list)
+        regexList.add(Pattern.compile("#[a-fA-F0-9]{6}").matcher(str));
+
         // Return whatever is in the regex list
         return regexList;
     }
@@ -94,6 +97,7 @@ public class Colors {
                         // Remove everything after the matcher code
                         matchStr = matchStr.substring(0, 7);
                     }
+
                     // Replace the hex color with proper color formatting
                     str = str.replace(match.group(i), String.valueOf(ChatColor.of(matchStr)).strip());
                 }

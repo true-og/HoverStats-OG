@@ -105,6 +105,9 @@ public class ConfigChecker {
         // Create a variable saying if the plugin is out of date
         boolean outOfDate = false;
 
+        // Remove any extra information
+        earlierVersion = earlierVersion.split(" ")[0];
+
         // Check if the earlier version of the config is 0
         if (earlierVersion.equals("0")) {
             // Return true
