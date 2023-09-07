@@ -14,8 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class HoverStats extends JavaPlugin {
     // Spigot id
     public String resourceID = "100245";
-    // Config Version
-    public String configVersion = "5.5.6";
 
     // Plugin Instance
     public static HoverStats getInstance;
