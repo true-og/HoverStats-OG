@@ -115,7 +115,7 @@ public class ConfigChecker {
         }
 
         // Check if the current version of the config is equal to the defined config version
-        if (!earlierVersion.equalsIgnoreCase(plugin.configVersion)) {
+        if (!earlierVersion.equalsIgnoreCase(plugin.getDescription().getVersion().replace(" BETA", "").trim())) {
             // Config is out of date, set it accordingly
             outOfDate = true;
         }

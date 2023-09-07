@@ -1,10 +1,10 @@
+# DO NOT CHANGE, this value is used for internal plugin use only
+Version: ${project.version}
 # #################################################################### #
 #                                                                      #
 #                              Config.yml                              #
 #                                                                      #
 # #################################################################### #
-# Do not change this
-Version: ${project.version}
 
 # Enable debug mode
 # Enabling this may result in your console being spammed with message about the plugin
