@@ -80,7 +80,9 @@ public class OnPlayerJoin implements EventExecutor, Listener {
             targetPlayer.spigot().sendMessage(hoverMessage);
         }
         // Send console the message
-        Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] " + joinMessage);
+        Bukkit.getServer().getConsoleSender().sendMessage(joinMessage);
+        // Cancel the event
+        e.setJoinMessage(null);
     }
 
     private TextComponent formatJoinHoverMessage(Player p, String message, boolean isNotFirstJoin) {

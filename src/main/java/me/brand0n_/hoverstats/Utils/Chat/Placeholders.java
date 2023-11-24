@@ -43,6 +43,8 @@ public class Placeholders {
                     .replace("%displayname%", p.getDisplayName())
                     // Replace the players username with the players name
                     .replace("%username%", p.getName())
+                    // Replace the players username with the players name
+                    .replace("%name%", p.getName())
                     // Replace the world with the current world the player is in
                     .replace("%world%", p.getWorld().getName());
         }
