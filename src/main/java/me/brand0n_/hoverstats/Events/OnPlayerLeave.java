@@ -70,7 +70,9 @@ public class OnPlayerLeave implements EventExecutor, Listener {
             targetPlayer.spigot().sendMessage(hoverMessage);
         }
         // Send console the message
-        Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] " + leaveMessage);
+        Bukkit.getServer().getConsoleSender().sendMessage(leaveMessage);
+        // Cancel the event
+        e.setQuitMessage(null);
     }
 
     private TextComponent formatJoinHoverMessage(Player p, String message) {
