@@ -1,12 +1,9 @@
 # HoverStats
-Hover stats is a server side chat plugin that allows for more user interaction with chat. This is done by adding a hoverable
-effect to the player's name and tags. All of these are defined inside the config.yml and can be very easily changed. There
-is also a customizable command that will be activated when the player clicks on the target player's name.
+HoverStats is a server-side chat plugin that allows for more user interaction with chat. This is done by adding a hoverable effect to the player's name and tags. All of these are defined inside the config.yml and can be very easily changed. There is also a customizable command that will be activated when the player clicks on the target player's name.
 
 
 # Disclaimer
-This plugin supports most chat plugins, however, there is some work needed to be done to make it compatible. If at first the
-plugin doesn't work then please change the following entry inside of the config
+This plugin supports most chat plugins, however, some work needs to be done to make it compatible. If at first the plugin doesn't work then please change the following entry inside the config
 ```yml
 Chat Event Priority: HIGH # Defaults to HIGH
 ```
@@ -30,6 +27,7 @@ Chat Event Priority: HIGHEST # Defaults to HIGH
 
 <details>
 <summary>Permission Nodes</summary>
+
 | Pemission | Description |
 | --- | --- |
 | `hoverstats.help` | Shows the help message for the plugin (Given by Default) |
@@ -47,6 +45,7 @@ Chat Event Priority: HIGHEST # Defaults to HIGH
 
 <details>
 <summary>Permission Packs</summary>
+
 | Pemission | Description |
 | --- | --- |
 | `hoverstats.*` | Gives access to all of the permissions listed above |
