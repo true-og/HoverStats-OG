@@ -27,10 +27,9 @@ Chat Event Priority: HIGHEST # Defaults to HIGH
 
 <details>
 <summary>Permissions</summary>
-**- Default means all players have access to it.** 
-**- OP means only ops have access to it.** 
-**- False means that you may have to add permission for it (or OPs have it by default)**
 
+<details>
+<summary>Permission Nodes</summary>
 | Pemission | Description |
 | --- | --- |
 | `hoverstats.help` | Shows the help message for the plugin (Given by Default) |
@@ -44,11 +43,14 @@ Chat Event Priority: HIGHEST # Defaults to HIGH
 | `hoverstats.colors.[color-name]` | This will give the player access to a specific chat color in chat. This has to be the color name (ex. dark_aqua) |
 | `hoverstats.join-formatting` | This will show the player the join format message specified in the config.yml (Given by Default) |
 | `hoverstats.leave-formatting` | This will show the player the quit format message specified in the config.yml (Given by Default) |
+</details>
 
-
-| Pemission Pack | Description |
+<details>
+<summary>Permission Packs</summary>
+| Pemission | Description |
 | --- | --- |
 | `hoverstats.*` | Gives access to all of the permissions listed above |
 | `hoverstats.admin` | Gives access to all of the permissions listed above |
+</details>
 
 </details>
