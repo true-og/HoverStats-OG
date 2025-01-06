@@ -31,19 +31,19 @@ Chat Event Priority: HIGHEST # Defaults to HIGH
 **- OP means only ops have access to it.** 
 **- False means that you may have to add permission for it (or OPs have it by default)**
 
-| Pemission | Description | Permission Level | 
+| Pemission | Description |
 | --- | --- |
-| `hoverstats.help` | Shows the help message for the plugin | Deafult |
-| `hoverstats.reload` | Gives the player the ability to reload the plugin | False |
-| `hoverstats.version` | Shows the current version of the plugin and config file | OP |
-| `hoverstats.update` | Will show the player if there is an update when they join the server | OP |
-| `hoverstats.chat.view` | Makes it so that the player can view hoverable messages (can only be used when **"Chat Formatting.Require Permissions"** is set to true | False |
-| `hoverstats.magic.*` | his will give the player access to all "magic" color codes | false |
-| `hoverstats.colors.hex` | This will give the player access to all hex colors | false |
-| `hoverstats.colors.*` | This will give the player access to all chat colors | false |
-| `hoverstats.colors.[color-name]` | This will give the player access to a specific chat color in chat. This has to be the color name (ex. dark_aqua) | false |
-| `hoverstats.join-formatting` | This will show the player the join format message specified in the config.yml | true |
-| `hoverstats.leave-formatting` | This will show the player the quit format message specified in the config.yml | true |
+| `hoverstats.help` | Shows the help message for the plugin (Given by Default) |
+| `hoverstats.reload` | Gives the player the ability to reload the plugin |
+| `hoverstats.version` | Shows the current version of the plugin and config file |
+| `hoverstats.update` | Will show the player if there is an update when they join the server |
+| `hoverstats.chat.view` | Makes it so that the player can view hoverable messages (can only be used when **"Chat Formatting.Require Permissions"** is set to true |
+| `hoverstats.magic.*` | his will give the player access to all "magic" color codes |
+| `hoverstats.colors.hex` | This will give the player access to all hex colors |
+| `hoverstats.colors.*` | This will give the player access to all chat colors |
+| `hoverstats.colors.[color-name]` | This will give the player access to a specific chat color in chat. This has to be the color name (ex. dark_aqua) |
+| `hoverstats.join-formatting` | This will show the player the join format message specified in the config.yml (Given by Default) |
+| `hoverstats.leave-formatting` | This will show the player the quit format message specified in the config.yml (Given by Default) |
 
 
 | Pemission Pack | Description |
