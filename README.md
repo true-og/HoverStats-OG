@@ -6,7 +6,7 @@ HoverStats is a server-side chat plugin that allows for more user interaction wi
 
 --- 
 # Disclaimer
-This plugin supports most chat plugins, however, some work needs to be done to make it compatible. If at first the plugin doesn't work then please change the following entry inside the config
+This plugin supports most chat plugins, however, some work needs to be done to make it compatible. If at first, the plugin doesn't work then please change the following entry inside the config
 ```yml
 Chat Event Priority: HIGH # Defaults to HIGH
 ```
@@ -14,7 +14,7 @@ to
 ```yml
 Chat Event Priority: HIGHEST # Defaults to HIGH
 ```
-This fix may not work for every instance, if this doesn't work please join our support discord and ask us for help. :D
+This fix may not work for every instance, if this doesn't work please join our ![support discord](https://www.discord.com/invite/eYW6tTuCKz) and ask us for help. :D
 <br />
 <br />
 
