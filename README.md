@@ -1,9 +1,8 @@
-# HoverStats
+# HoverStats-OG
+
+HoverStats-OG is a fork of [HoverStats](https://github.com/Brand0n1/HoverStats-Test) updated and maintained for 1.19.4 by [TrueOG Network](https://trueog.net).
+
 HoverStats is a server-side chat plugin that allows for more user interaction with chat. This is done by adding a hoverable effect to the player's name and tags. All of these are defined inside the config.yml and can be very easily changed. There is also a customizable command that will be activated when the player clicks on the target player's name.
-
---- 
-![Spiget Downloads](https://img.shields.io/spiget/downloads/100245?style=for-the-badge&label=Spigot%20Downloads) ![Spiget Version](https://img.shields.io/spiget/version/100245?style=for-the-badge&label=Release) ![Spiget tested server versions](https://img.shields.io/spiget/tested-versions/100245?style=for-the-badge&label=Supported%20Versions) ![GitHub License](https://img.shields.io/github/license/Brand0n1/HoverStats-Test?style=for-the-badge&color=yellow) [![Discord](https://img.shields.io/discord/989329284667695195?style=for-the-badge&label=Support%20Discord&color=%237289da&link=https%3A%2F%2Fwww.discord.com%2Finvite%2FeYW6tTuCKz&link=https%3A%2F%2Fwww.discord.com%2Finvite%2FeYW6tTuCKz)](https://www.discord.com/invite/eYW6tTuCKz)
-
 
 --- 
 # Disclaimer
