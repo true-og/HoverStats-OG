@@ -63,7 +63,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6") // Import PlaceholderAPI.
     compileOnlyApi(project(":libs:Utilities-OG")) // Import TrueOG Network Utilities-OG API.
     compileOnlyApi(
-        "net.trueog.diamondbank-og:diamondbank-og:1.19-190fb1dc21"
+        "net.trueog.diamondbank-og:diamondbank-og:1.19-7957b9127d"
     ) // Import TrueOG Network DiamondBank-OG API.
 }
 
