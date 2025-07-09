@@ -1,5 +1,6 @@
 package me.brand0n_.hoverstats.Events;
 
+import java.util.Set;
 import me.brand0n_.hoverstats.HoverStats;
 import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
@@ -15,13 +16,10 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Set;
-
 public class OnPlayerChat implements EventExecutor, Listener {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     private boolean hasFinalSpace = false;
-
 
     @Override
     public void execute(@NotNull Listener listener, @NotNull Event event) {
@@ -41,9 +39,10 @@ public class OnPlayerChat implements EventExecutor, Listener {
         // Check if the plugin is using its own formatting
         if (plugin.getConfig().getBoolean("Chat Formatting.Use Formatting", true)) {
             // Get the format from config
-            String newFormatting = getNewFormatting(p, plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%"));
+            String newFormatting = getNewFormatting(
+                    p, plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%"));
             // Set the chat format to be the new format defined in the config file
-            e.setFormat(Placeholders.addPlaceholders(p, newFormatting));
+            e.setFormat(Placeholders.addPlaceholders(p, newFormatting).examinableName());
         }
 
         // Format chat based on the current chat format
@@ -75,7 +74,7 @@ public class OnPlayerChat implements EventExecutor, Listener {
                 // Replace the displayname placeholder with the default minecraft placeholder
                 .replace("%displayname%", "%1$s");
         // Add in color formatting to the given format
-        format = Placeholders.addPlaceholders(p, format);
+        format = Placeholders.addPlaceholders(p, format).examinableName();
 
         // Loop through all the individual words in the provided format
         for (String formattedString : format.split(" ")) {
@@ -120,7 +119,7 @@ public class OnPlayerChat implements EventExecutor, Listener {
                 // Check if the first occurrence of the word is at a valid location
                 if (firstOccurrence > 0) {
                     // Get the character in front of the word
-                    char previousCharacter = format.charAt(firstOccurrence-1);
+                    char previousCharacter = format.charAt(firstOccurrence - 1);
                     // Check if the character is a percent sign
                     if (previousCharacter == '%') {
                         // Add in any remaining strings
@@ -171,7 +170,8 @@ public class OnPlayerChat implements EventExecutor, Listener {
                 continue;
             }
             // Check if the player has the permission to use this color
-            if (Permissions.hasPermission(p, "hoverstats.colors", color.name().toLowerCase()) || Permissions.hasPermission(p, "hoverstats.colors.*")) {
+            if (Permissions.hasPermission(p, "hoverstats.colors", color.name().toLowerCase())
+                    || Permissions.hasPermission(p, "hoverstats.colors.*")) {
                 // Player has the permission to use this color code, replace the color code with the formatted color
                 str = str.replace("&" + color.getChar(), color.toString());
             }
@@ -184,7 +184,8 @@ public class OnPlayerChat implements EventExecutor, Listener {
                 continue;
             }
             // Check if the player has the permission to use this color
-            if (Permissions.hasPermission(p, "hoverstats.magic", magic.name().toLowerCase()) || Permissions.hasPermission(p, "hoverstats.magic.*")) {
+            if (Permissions.hasPermission(p, "hoverstats.magic", magic.name().toLowerCase())
+                    || Permissions.hasPermission(p, "hoverstats.magic.*")) {
                 // Player has the permission to use this magic code, replace the magic code with the formatted color
                 str = str.replace("&" + magic.getChar(), magic.toString());
             }
@@ -203,7 +204,8 @@ public class OnPlayerChat implements EventExecutor, Listener {
 
         // Check if the output had a final space in front of the message
         if (hasFinalSpace) {
-            // There is supposed to be a space separating the message and the player name, replace the current message with the newly formatted one with a space
+            // There is supposed to be a space separating the message and the player name, replace the current message
+            // with the newly formatted one with a space
             eMessage = new TextComponent(TextComponent.fromLegacyText(" " + message.replace("%2$s", "")));
         }
 

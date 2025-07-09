@@ -1,12 +1,13 @@
 package me.brand0n_.hoverstats.Utils.Chat;
 
-import me.brand0n_.hoverstats.HoverStats;
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.entity.Player;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
+import me.brand0n_.hoverstats.HoverStats;
+import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.TextComponent;
+import net.trueog.utilitiesog.UtilitiesOG;
+import org.bukkit.entity.Player;
 
 public class Placeholders {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
@@ -21,15 +22,16 @@ public class Placeholders {
         return false;
     }
 
-    public static String addPlaceholders(Player p, String str) {
+    public static TextComponent addPlaceholders(Player p, String str) {
         // Check if the player is valid
         if (p != null) {
             // Get the time that the player first joined the server
             Date firstJoinDate = new Date(p.getFirstPlayed());
             // Get the last time that the player first joined the server
-            Date lastJoinDate = new Date(p.getLastPlayed());
+            Date lastJoinDate = new Date(p.getLastSeen());
             // Format the date to be in a readable format
-            SimpleDateFormat sdf = new SimpleDateFormat(plugin.getConfig().getString("Date Format", "MM/dd/yy hh:mm:ss"));
+            SimpleDateFormat sdf =
+                    new SimpleDateFormat(plugin.getConfig().getString("Date Format", "MM/dd/yy hh:mm:ss"));
 
             // Format the string with all plugin specific placeholders
             str = str
@@ -40,7 +42,7 @@ public class Placeholders {
                     // Replace the first join time with the formatted first join time
                     .replace("%last_joined%", sdf.format(lastJoinDate))
                     // Replace the display name with the players display name
-                    .replace("%displayname%", p.getDisplayName())
+                    .replace("%displayname%", p.displayName().examinableName())
                     // Replace the players username with the players name
                     .replace("%username%", p.getName())
                     // Replace the players username with the players name
@@ -59,7 +61,7 @@ public class Placeholders {
             str = PlaceholderAPI.setPlaceholders(p, str);
         }
         // Return the formatted result of the current string plugged into the rest of the plugin specific placeholders
-        return formatPlaceholders(str);
+        return UtilitiesOG.trueogColorize(formatPlaceholders(str));
     }
 
     public static String formatPlaceholders(String msg) {
@@ -76,8 +78,12 @@ public class Placeholders {
                 // Replace the command name with the command name defined in the config (alternative formatting)
                 .replace("%cmdName%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Command Name")))
                 // Replace the plugin name with the plugin name defined in the config
-                .replace("%pluginname%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Plugin Name")))
+                .replace(
+                        "%pluginname%",
+                        Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Plugin Name")))
                 // Replace the plugin name with the plugin name defined in the config (alternative formatting)
-                .replace("%pluginName%", Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Plugin Name"))));
+                .replace(
+                        "%pluginName%",
+                        Objects.requireNonNull(plugin.getConfig().getString("Placeholders.Plugin Name"))));
     }
 }

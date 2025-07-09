@@ -6,7 +6,6 @@ import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import me.brand0n_.hoverstats.Utils.Chat.Messages;
 import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
 import me.brand0n_.hoverstats.Utils.Updates.ConfigChecker;
-import me.brand0n_.hoverstats.Utils.Updates.UpdateChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,8 +14,11 @@ public final class HoverStats extends JavaPlugin {
     // Spigot id
     public String resourceID = "100245";
 
+    // Plugin prefix
+    static String prefix = "&7[&eHoverStats&f-&4OG&7] ";
+
     // Plugin Instance
-    public static HoverStats getInstance;
+    static HoverStats instance;
 
     // Variable
     public boolean usePAPI = getConfig().getBoolean("PAPI hook");
@@ -35,12 +37,10 @@ public final class HoverStats extends JavaPlugin {
         setupClasses();
         // Check if SoftDepends on are loaded
         checkSoftDependentPlugins();
-        // Check if the plugin needs an update
-        UpdateChecker.sendConsoleUpdateMessage();
     }
 
     private void setupClasses() {
-        getInstance = this;
+        instance = this;
         CommandUtils.init();
         EventUtils.init();
     }
@@ -70,5 +70,15 @@ public final class HoverStats extends JavaPlugin {
 
         // Send reload message
         Messages.reloaded(sender);
+    }
+
+    public static String getPrefix() {
+
+        return prefix;
+    }
+
+    public static HoverStats getInstance() {
+
+        return instance;
     }
 }

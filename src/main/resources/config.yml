@@ -1,5 +1,5 @@
 # DO NOT CHANGE, this value is used for internal plugin use only
-Version: ${project.version}
+Version: ${version}
 # #################################################################### #
 #                                                                      #
 #                              Config.yml                              #
@@ -77,25 +77,6 @@ Hex Patterns:
 
 # Set the global date format
 Date Format: "MM/dd/yy hh:mm:ss"
-
-Join Formatting:
-  # Setting this to false will make it so that either another plugin or default
-  # minecraft will take control over the server's join messages. Setting this
-  # to true will use the formatting below
-  Use Formatting: true
-  # Set the format of the message when the player joins the server
-  Join Message Format: "&8[&a+&8] &7%displayname%"
-  # Set the format of the message sent when the player first joins the server
-  First Join Message Format: "&7Welcome &b%displayname%&7 to the server!"
-
-Quit Formatting:
-  # Setting this to false will make it so that either another plugin or default
-  # minecraft will take control over the server's leave messages. Setting this
-  # to true will use the formatting below
-  Use Formatting: true
-  # Set the format of the message when the player leaves the server
-  Quit Message Format: "&8[&c-&8] &7%displayname%"
-
 
 Chat Formatting:
   # Setting this to false will make it so that another plugin will take control

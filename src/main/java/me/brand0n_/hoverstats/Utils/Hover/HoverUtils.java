@@ -1,6 +1,7 @@
 package me.brand0n_.hoverstats.Utils.Hover;
 
-
+import java.util.ArrayList;
+import java.util.List;
 import me.brand0n_.hoverstats.HoverStats;
 import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import me.brand0n_.hoverstats.Utils.Chat.Placeholders;
@@ -9,21 +10,21 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HoverUtils {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     public static TextComponent setupHoverChatMessage(Player p, String message) {
-       // Create the main hover component from provided message
+        // Create the main hover component from provided message
         TextComponent mainComponent = new TextComponent(TextComponent.fromLegacyText(Colors.chatColor(message)));
         // Setup what will happen when the player clicks on the message
-        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, Colors.chatColor(plugin.getConfig().getString("Hover.Stats Click Command", "/msg %player% ")
-                .replace("%displayname%", p.getDisplayName()).replace("%player%", p.getName()))));
+        String suggestCmd = plugin.getConfig()
+                .getString("Hover.Stats Click Command", "/msg %player% ")
+                .replace("%displayname%", p.displayName().examinableName())
+                .replace("%player%", p.getName());
+
+        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestCmd));
 
         // Get the defined hover message from the config
         List<String> path = plugin.getConfig().getStringList("Hover.Stats");
@@ -45,11 +46,14 @@ public class HoverUtils {
     }
 
     public static TextComponent setupHoverJoinMessage(Player p, String message) {
-        // Create the main hover component from provided message
         TextComponent mainComponent = new TextComponent(TextComponent.fromLegacyText(Colors.chatColor(message)));
-        // Setup what will happen when the player clicks on the message
-        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, Colors.chatColor(plugin.getConfig().getString("Hover.Join Click Command", "Welcome back")
-                .replace("%displayname%", p.getDisplayName()).replace("%player%", p.getName()))));
+
+        String suggestCmd = plugin.getConfig()
+                .getString("Hover.Join Click Command", "Welcome back")
+                .replace("%displayname%", p.displayName().examinableName())
+                .replace("%player%", p.getName());
+
+        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestCmd));
 
         // Get the defined hover message from the config
         List<String> path = plugin.getConfig().getStringList("Hover.Join");
@@ -71,11 +75,14 @@ public class HoverUtils {
     }
 
     public static TextComponent setupHoverFirstJoinMessage(Player p, String message) {
-        // Create the main hover component from provided message
         TextComponent mainComponent = new TextComponent(TextComponent.fromLegacyText(Colors.chatColor(message)));
-        // Setup what will happen when the player clicks on the message
-        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, Colors.chatColor(plugin.getConfig().getString("Hover.First Join Click Command", "Welcome to the Server!")
-                .replace("%displayname%", p.getDisplayName()).replace("%player%", p.getName()))));
+
+        String suggestCmd = plugin.getConfig()
+                .getString("Hover.First Join Click Command", "Welcome to the Server!")
+                .replace("%displayname%", p.displayName().examinableName())
+                .replace("%player%", p.getName());
+
+        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestCmd));
 
         // Get the defined hover message from the config
         List<String> path = plugin.getConfig().getStringList("Hover.First Join");
@@ -95,11 +102,14 @@ public class HoverUtils {
     }
 
     public static TextComponent setupHoverLeaveMessage(Player p, String message) {
-        // Create the main hover component from provided message
         TextComponent mainComponent = new TextComponent(TextComponent.fromLegacyText(Colors.chatColor(message)));
-        // Setup what will happen when the player clicks on the message
-        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, Colors.chatColor(plugin.getConfig().getString("Hover.Quit Click Command", "/mail %player% ")
-                .replace("%displayname%", p.getDisplayName()).replace("%player%", p.getName()))));
+
+        String suggestCmd = plugin.getConfig()
+                .getString("Hover.Quit Click Command", "/mail %player% ")
+                .replace("%displayname%", p.displayName().examinableName())
+                .replace("%player%", p.getName());
+
+        mainComponent.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, suggestCmd));
 
         // Get the defined hover message from the config
         List<String> path = plugin.getConfig().getStringList("Hover.Quit");
@@ -127,9 +137,9 @@ public class HoverUtils {
         // Loop through all the elements in the string list provided
         for (int i = 0; i < strList.size(); i++) {
             // Format the output by first clearing any formatting from the previous message
-            String output = ChatColor.RESET + strList.get(i);
+            String output = "&r" + strList.get(i);
             // Add in any placeholders that can be added to the message as well as formatting the colors
-            output = Placeholders.addPlaceholders(p, output);
+            output = Placeholders.addPlaceholders(p, output).examinableName();
 
             // Create a new base component from the output text with all its formatting
             BaseComponent[] legacyOutput = TextComponent.fromLegacyText(output);

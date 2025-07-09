@@ -12,7 +12,8 @@ public class HoverStatsCommand implements CommandExecutor {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
+    public boolean onCommand(
+            @NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
         // Check if the argument is 1 or greater
         if (args.length >= 1) {
             if (args[0].equalsIgnoreCase("reload")) {
@@ -28,7 +29,9 @@ public class HoverStatsCommand implements CommandExecutor {
                 return false;
             }
             // Check if the player is trying to get the plugin version
-            if (args[0].equalsIgnoreCase("version") || args[0].equalsIgnoreCase("ver") || args[0].equalsIgnoreCase("v")) {
+            if (args[0].equalsIgnoreCase("version")
+                    || args[0].equalsIgnoreCase("ver")
+                    || args[0].equalsIgnoreCase("v")) {
                 if (Permissions.hasPermission(sender, "hoverstats.version")) {
                     // Tell the player what version their on
                     Messages.sendVersionInfo(sender);

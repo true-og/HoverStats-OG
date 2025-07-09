@@ -1,5 +1,11 @@
 package me.brand0n_.hoverstats.Utils.Updates;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import me.brand0n_.hoverstats.HoverStats;
 import me.brand0n_.hoverstats.Utils.Chat.Colors;
 import org.bukkit.Bukkit;
@@ -7,14 +13,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-@SuppressWarnings({"ResultOfMethodCallIgnored", "BooleanMethodIsAlwaysInverted"})
 public class ConfigChecker {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
@@ -25,9 +23,13 @@ public class ConfigChecker {
             return;
         }
         // Check if the chat format has the %message% placeholder
-        if (!plugin.getConfig().getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%").contains("%message%")) {
+        if (!plugin.getConfig()
+                .getString("Chat Formatting.Format", "&7%displayname% &8&l> &7%message%")
+                .contains("%message%")) {
             // Tell the user the formatting is wrong
-            plugin.getLogger().severe("Could not find \"%message%\" in the chat format. Please take a look to ensure that it is included, chat formatting will not be used.");
+            plugin.getLogger()
+                    .severe(
+                            "Could not find \"%message%\" in the chat format. Please take a look to ensure that it is included, chat formatting will not be used.");
             // Turn off the chat formatting
             plugin.getConfig().set("Chat Formatting.Use Formatting", false);
             // Save the config
@@ -62,7 +64,8 @@ public class ConfigChecker {
         // Declare a variable for the new location of the file to save into
         String fileName = currDate + "-%num%.yml";
         // Save the new location for the config file
-        File newConfig = new File(plugin.getDataFolder() + "/old configs", fileName.replace("%num%", String.valueOf(num)));
+        File newConfig =
+                new File(plugin.getDataFolder() + "/old configs", fileName.replace("%num%", String.valueOf(num)));
 
         // Get the proper file version
         fileName = fileVersion(newConfig, fileName, num);
@@ -100,7 +103,6 @@ public class ConfigChecker {
         transferOldData(newConfig);
     }
 
-
     public static boolean isOutOfDate(String earlierVersion) {
         // Create a variable saying if the plugin is out of date
         boolean outOfDate = false;
@@ -115,7 +117,8 @@ public class ConfigChecker {
         }
 
         // Check if the current version of the config is equal to the defined config version
-        if (!earlierVersion.equalsIgnoreCase(plugin.getDescription().getVersion().replace(" BETA", "").trim())) {
+        if (!earlierVersion.equalsIgnoreCase(
+                plugin.getPluginMeta().getVersion().replace(" BETA", "").trim())) {
             // Config is out of date, set it accordingly
             outOfDate = true;
         }
@@ -141,7 +144,6 @@ public class ConfigChecker {
         return dateFormat.format(currTime);
     }
 
-
     /**
      * This method creates a formatted version of the old file, using the current date and checking if there are any other files that already exist.
      * <br /><br />
@@ -160,7 +162,8 @@ public class ConfigChecker {
                     break;
                 }
                 // File exists change the name to have a (#)
-                newFile.renameTo(new File(plugin.getDataFolder() + "/old configs", fileName.replace("%num%", String.valueOf(num))));
+                newFile.renameTo(new File(
+                        plugin.getDataFolder() + "/old configs", fileName.replace("%num%", String.valueOf(num))));
                 // Increment the file number
                 num++;
             } while (newFile.exists());
@@ -170,7 +173,6 @@ public class ConfigChecker {
         // Assign the file name to be the accurate file iteration
         return fileName.replace("%num%", String.valueOf(num));
     }
-
 
     /**
      * This method creates the new file and saves it to the file
@@ -186,42 +188,74 @@ public class ConfigChecker {
             // Check if the parent file exists
             if (!newFile.getParentFile().exists()) {
                 // Send message saying there was an issue with the parent file
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[ &fParent File Issue &9]⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                Bukkit.getServer()
+                        .getConsoleSender()
+                        .sendMessage(Colors.chatColor(
+                                "[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[ &fParent File Issue &9]⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
                 // Tell user the parent file is being created
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Parent file couldn't be found, attempting to create it."));
+                Bukkit.getServer()
+                        .getConsoleSender()
+                        .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                                + " &cERROR &8| &7Parent file couldn't be found, attempting to create it."));
                 // Try to create the new parent directory
                 if (!newFile.getParentFile().mkdir()) {
                     // Print barrier
-                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                    Bukkit.getServer()
+                            .getConsoleSender()
+                            .sendMessage(Colors.chatColor(
+                                    "[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
                     // Tell user there was an error with creating the parent directory
-                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file! " +
-                            "(Reason: Parent file couldn't be created.)"));
+                    Bukkit.getServer()
+                            .getConsoleSender()
+                            .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                                    + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file! "
+                                    + "(Reason: Parent file couldn't be created.)"));
                     // Print barrier
-                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                    Bukkit.getServer()
+                            .getConsoleSender()
+                            .sendMessage(Colors.chatColor(
+                                    "[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
                     return null;
                 }
                 // Tell the user the file was created
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Parent file Created."));
+                Bukkit.getServer()
+                        .getConsoleSender()
+                        .sendMessage(
+                                Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Parent file Created."));
                 // Print barrier
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+                Bukkit.getServer()
+                        .getConsoleSender()
+                        .sendMessage(Colors.chatColor(
+                                "[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             }
             // Create a new file for the config file
             newFile.createNewFile();
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Destination File created."));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor(
+                            "[" + plugin.getName() + "]" + " &eINFO  &8| &7Destination File created."));
         } catch (IOException e) {
             // Print barrier
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor(
+                            "[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             // File failed to be moved or wasn't found, tell user
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file " +
-                    "(Reason: Error creating new file."));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                            + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file "
+                            + "(Reason: Error creating new file."));
             // Print barrier
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor(
+                            "[" + plugin.getName() + "]" + "&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             // Stop checking config
             return null;
         }
         return newFile;
     }
-
 
     /**
      * This method copies data from one file to another file
@@ -245,16 +279,22 @@ public class ConfigChecker {
             return true;
         } catch (IOException | SecurityException e) {
             // Print barrier
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             // File failed to be moved or wasn't found, tell user
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file " +
-                    "(Reason: Couldn't move config file.)"));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                            + " &cERROR &8| &7Old config file was unable to be moved. Aborting updating configuration file "
+                            + "(Reason: Couldn't move config file.)"));
             // Print barrier
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             return false;
         }
     }
-
 
     /**
      * This method deletes the old file, if the file cannot be deleted it will remove the newly created config as well
@@ -272,40 +312,66 @@ public class ConfigChecker {
         // Delete old config file
         if (!oldConfig.delete()) {
             // Print barrier
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
             // File failed to be moved or wasn't found, tell user
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Old config file was unable to be deleted. Aborting updating configuration file " +
-                    "(Reason: Couldn't delete config file.)"));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                            + " &cERROR &8| &7Old config file was unable to be deleted. Aborting updating configuration file "
+                            + "(Reason: Couldn't delete config file.)"));
             // Remove the new file
             if (newFile.delete()) {
                 // Tell the user th new file was removed
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7New configuration file cleaned up."));
+                Bukkit.getServer()
+                        .getConsoleSender()
+                        .sendMessage(Colors.chatColor(
+                                "[" + plugin.getName() + "]" + " &eINFO  &8| &7New configuration file cleaned up."));
                 // Check if there is any data inside the parent file
                 if (newFile.getParentFile().length() == 0) {
                     // Tell the user the new file was removed
-                    Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7There is nothing left inside of the parent directory, attempting to remove folder."));
+                    Bukkit.getServer()
+                            .getConsoleSender()
+                            .sendMessage(
+                                    Colors.chatColor(
+                                            "[" + plugin.getName() + "]"
+                                                    + " &eINFO  &8| &7There is nothing left inside of the parent directory, attempting to remove folder."));
                     // Remove the parent file
                     if (newFile.getParentFile().delete()) {
                         // Tell the user the directory was removed
-                        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Parent directory has been successfully deleted."));
+                        Bukkit.getServer()
+                                .getConsoleSender()
+                                .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                                        + " &eINFO  &8| &7Parent directory has been successfully deleted."));
                     } else {
                         // Tell the user the new file wasn't able to be removed
-                        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Unable to delete the new file's parent directory."));
+                        Bukkit.getServer()
+                                .getConsoleSender()
+                                .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                                        + " &cERROR &8| &7Unable to delete the new file's parent directory."));
                     }
                 }
                 return false;
             } else {
                 // Tell the user old config file was deleted
-                Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &cERROR &8| &7Unable to delete the new configuration file."));
+                Bukkit.getServer()
+                        .getConsoleSender()
+                        .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                                + " &cERROR &8| &7Unable to delete the new configuration file."));
             }
         } else {
-            Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("[" + plugin.getName() + "]" + " &eINFO  &8| &7Old configuration file has been successfully deleted."));
+            Bukkit.getServer()
+                    .getConsoleSender()
+                    .sendMessage(Colors.chatColor("[" + plugin.getName() + "]"
+                            + " &eINFO  &8| &7Old configuration file has been successfully deleted."));
             // Print barrier
         }
-        Bukkit.getServer().getConsoleSender().sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
+        Bukkit.getServer()
+                .getConsoleSender()
+                .sendMessage(Colors.chatColor("&9⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"));
         return true;
     }
-
 
     /**
      * This method saves all data from previous versions of the plugin into the config file

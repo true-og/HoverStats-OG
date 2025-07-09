@@ -1,15 +1,15 @@
 package me.brand0n_.hoverstats.Utils.Chat;
 
-import me.brand0n_.hoverstats.HoverStats;
-import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import me.brand0n_.hoverstats.HoverStats;
+import net.md_5.bungee.api.ChatColor;
+import net.trueog.utilitiesog.UtilitiesOG;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class Colors {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
@@ -17,7 +17,8 @@ public class Colors {
     // Check if the plugin version is hex compatible
     public static boolean isCorrectVersionHex() {
         // Isolate the version value in Bukkit version
-        String versionStr = Bukkit.getVersion().split("\\(MC:")[1].replace(")", "").strip();
+        String versionStr =
+                Bukkit.getVersion().split("\\(MC:")[1].replace(")", "").strip();
         // Get just the version number, don't care about anything else
         String[] versionArry = versionStr.split("\\.");
         // Attempt to convert the version string to an integer
@@ -28,10 +29,14 @@ public class Colors {
             return version >= 16;
         } catch (NumberFormatException e) {
             // Tell the user that their current version doesn't support hex
-            Bukkit.getServer().getConsoleSender().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', "[" + plugin.getName() + "]" + " &6WARNING &8| &7Your current server version (" + versionStr + ") doesn't support hex color codes."));
-            Bukkit.getServer().getConsoleSender().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', "[" + plugin.getName() + "] &eINFO &8| &7Hex color is only supported in 1.16 and above."));
-            Bukkit.getServer().getConsoleSender().sendMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', "[" + plugin.getName() + "] &9Support &8| If you believe this is an issue please contact us on discord @ https://discord.gg/eYW6tTuCKz."));
-            // If the string isn't a number return false
+            UtilitiesOG.logToConsole(
+                    HoverStats.getPrefix(),
+                    "[" + plugin.getName() + "]" + " &6WARNING &8| &7Your current server version (" + versionStr
+                            + ") doesn't support hex color codes.");
+            UtilitiesOG.logToConsole(
+                    HoverStats.getPrefix(),
+                    "[" + plugin.getName() + "] &eINFO &8| &7Hex color is only supported in 1.16 and above.");
+            // If the string isn't a number, return false.
             return false;
         }
     }
@@ -99,7 +104,9 @@ public class Colors {
                     }
 
                     // Replace the hex color with proper color formatting
-                    str = str.replace(match.group(i), String.valueOf(ChatColor.of(matchStr)).strip());
+                    str = str.replace(
+                            match.group(i),
+                            String.valueOf(ChatColor.of(matchStr)).strip());
                 }
             }
         }
@@ -123,9 +130,11 @@ public class Colors {
 
         for (org.bukkit.ChatColor chatColor : org.bukkit.ChatColor.values()) {
             // Check if the chat color is equal to any of the magic values
-            if (chatColor.equals(org.bukkit.ChatColor.MAGIC) || chatColor.equals(org.bukkit.ChatColor.ITALIC) ||
-                    chatColor.equals(org.bukkit.ChatColor.BOLD) || chatColor.equals(org.bukkit.ChatColor.STRIKETHROUGH) ||
-                    chatColor.equals(org.bukkit.ChatColor.UNDERLINE)) {
+            if (chatColor.equals(org.bukkit.ChatColor.MAGIC)
+                    || chatColor.equals(org.bukkit.ChatColor.ITALIC)
+                    || chatColor.equals(org.bukkit.ChatColor.BOLD)
+                    || chatColor.equals(org.bukkit.ChatColor.STRIKETHROUGH)
+                    || chatColor.equals(org.bukkit.ChatColor.UNDERLINE)) {
                 continue;
             }
             // Add the chat colors to the list
@@ -160,5 +169,4 @@ public class Colors {
     public static String finalChatColor(String str) {
         return org.bukkit.ChatColor.getLastColors(str);
     }
-
 }

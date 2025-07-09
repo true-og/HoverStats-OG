@@ -1,8 +1,7 @@
 package me.brand0n_.hoverstats.Commands;
 
-import me.brand0n_.hoverstats.HoverStats;
-
 import java.util.Objects;
+import me.brand0n_.hoverstats.HoverStats;
 
 public class CommandUtils {
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
