@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class Colors {
+
     private static final HoverStats plugin = HoverStats.getPlugin(HoverStats.class); // Get this from main
 
     // Check if the plugin version is hex compatible
