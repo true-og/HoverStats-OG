@@ -10,27 +10,42 @@ import org.jetbrains.annotations.NotNull;
 
 public class HoverStatsTabHandler implements TabCompleter {
 
-    public List<String> onTabComplete(
-            final @NotNull CommandSender sender,
-            final @NotNull Command cmd,
-            final @NotNull String label,
-            final String[] args) {
+    public List<String> onTabComplete(final @NotNull CommandSender sender, final @NotNull Command cmd,
+            final @NotNull String label, final String[] args)
+    {
+
         final List<String> result = new ArrayList<>();
 
         if (args.length == 1) {
+
             if (Permissions.hasPermission(sender, "hoverstats.help")) {
+
                 result.add("help");
+
             }
+
             if (Permissions.hasPermission(sender, "hoverstats.reload")) {
+
                 result.add("reload");
+
             }
+
             if (Permissions.hasPermission(sender, "hoverstats.version")) {
+
                 result.add("version");
+
             }
+
         }
+
         if (result.isEmpty()) {
+
             return null;
+
         }
+
         return result;
+
     }
+
 }

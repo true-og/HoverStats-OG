@@ -1,21 +1,21 @@
-/* This is free and unencumbered software released into the public domain*/
+/* This is free and unencumbered software released into the public domain */
 
-import java.nio.file.Files
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.transform.OutputKeys
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.dom.DOMSource
-import javax.xml.transform.stream.StreamResult
+import org.gradle.kotlin.dsl.provideDelegate
 
 /* ------------------------------ Plugins ------------------------------ */
 plugins {
-    id("java") // Tell gradle this is a java project.
-    id("java-library") // Import helper for source-based libraries.
-    kotlin("jvm") version "2.1.21" // Import kotlin jvm plugin for kotlin/java integration.
-    id("com.diffplug.spotless") version "7.0.4" // Import auto-formatter.
-    id("com.gradleup.shadow") version "8.3.6" // Import shadow API.
-    eclipse // Import eclipse plugin for IDE integration.
+    id("java") // Import Java plugin.
+    id("java-library") // Import Java Library plugin.
+    id("com.diffplug.spotless") version "7.0.4" // Import Spotless plugin.
+    id("com.gradleup.shadow") version "8.3.6" // Import Shadow plugin.
+    id("checkstyle") // Import Checkstyle plugin.
+    eclipse // Import Eclipse plugin.
+    kotlin("jvm") version "2.1.21" // Import Kotlin JVM plugin.
 }
+
+extra["kotlinAttribute"] = Attribute.of("kotlin-tag", Boolean::class.javaObjectType)
+
+val kotlinAttribute: Attribute<Boolean> by rootProject.extra
 
 /* --------------------------- JDK / Kotlin ---------------------------- */
 java {
@@ -29,31 +29,11 @@ java {
 kotlin { jvmToolchain(17) }
 
 /* ----------------------------- Metadata ------------------------------ */
-group = "me.Brand0n_"
+group = "net.trueog.hoverstats-og" // Declare bundle identifier.
 
-version = "5.6.1"
+version = "6.0" // Declare plugin version (will be in .jar).
 
-val apiVersion = "1.19"
-
-eclipse { project { name = "HoverStats-OG-Plugin" } }
-
-/* -------- Kotlin subprojects -> jars on Eclipse/compile classpath ----- */
-val kotlinPluginProjects = listOf(":libs:DiamondBank-OG") // <— single place
-
-kotlinPluginProjects.forEach { evaluationDependsOn(it) } // Ensure subprojects are evaluated first.
-
-val ideLibDir = layout.buildDirectory.dir("ide-libs")
-val hashRegex = Regex("-[0-9a-fA-F]{10}(?=\\.jar$)") // Black magic.
-
-/* --------------------------- IDE-only configuration ------------------- */
-val ideLibs: Configuration by
-    configurations.creating {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
-
-/* Tell Eclipse/Buildship to include the IDE jars                        */
-eclipse { classpath { plusConfigurations += ideLibs } }
+val apiVersion = "1.19" // Declare minecraft server target version.
 
 /* ----------------------------- Resources ----------------------------- */
 tasks.named<ProcessResources>("processResources") {
@@ -65,11 +45,12 @@ tasks.named<ProcessResources>("processResources") {
 
 /* ---------------------------- Repos ---------------------------------- */
 repositories {
-    mavenCentral()
-    gradlePluginPortal()
-    maven { url = uri("https://repo.purpurmc.org/snapshots") }
-    maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
-    maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
+    mavenCentral() // Import the Maven Central Maven Repository.
+    gradlePluginPortal() // Import the Gradle Plugin Portal Maven Repository.
+    maven { url = uri("https://repo.purpurmc.org/snapshots") } // Import the PurpurMC Maven Repository.
+    maven {
+        url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    } // Import PlaceholderAPI Maven Repository.
     maven { url = uri("file://${System.getProperty("user.home")}/.m2/repository") }
     System.getProperty("SELF_MAVEN_LOCAL_REPO")?.let { // TrueOG Bootstrap mavenLocal().
         val dir = file(it)
@@ -78,109 +59,25 @@ repositories {
             maven { url = uri("file://${dir.absolutePath}") }
         } else {
             logger.error("TrueOG Bootstrap not found, defaulting to ~/.m2 for mavenLocal()")
+            mavenLocal()
         }
     } ?: logger.error("TrueOG Bootstrap not found, defaulting to ~/.m2 for mavenLocal()")
 }
 
 /* ---------------------- Java project deps ---------------------------- */
 dependencies {
-    compileOnly("org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT")
-    compileOnly("me.clip:placeholderapi:2.11.6") // Import PlaceholderAPI.
-    compileOnlyApi(project(":libs:Utilities-OG")) // Import TrueOG Network Utilities-OG API.
-    // Import TrueOG Network Kotlin-based APIs as jars (shadow output) so Eclipse code later can treat them as jar deps.
-    kotlinPluginProjects.forEach { compileOnlyApi(project(mapOf("path" to it, "configuration" to "shadow"))) }
+    compileOnly("org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT") // Declare Purpur API version to be packaged.
+    compileOnly("me.clip:placeholderapi:2.11.6") // Import PlaceholderAPI (internally deprecated).
+    compileOnlyApi(project(":libs:Utilities-OG")) // Import TrueOG Network Utilities-OG Java API (from source).
+    compileOnlyApi(project(":libs:DiamondBank-OG")) {
+        attributes { attribute(kotlinAttribute, true) }
+    } // Import TrueOG network DiamondBank-OG Kotlin API (from source).
 }
 
-/* --- copy shaded jars & make Eclipse see them as individual libs ---- */
-val copyTasks = mutableListOf<TaskProvider<Copy>>()
-
-kotlinPluginProjects.forEach { path ->
-    val sub = project(path)
-    val shadowJarProv = sub.tasks.named("shadowJar")
-    val copyTask =
-        tasks.register<Copy>("ideCopy${sub.name.replaceFirstChar(Char::titlecase)}") {
-            dependsOn(shadowJarProv)
-            from(shadowJarProv)
-            into(ideLibDir)
-            rename { it.replace(hashRegex, "") } // Remove git commit hash from jarfile.
-        }
-    copyTasks += copyTask
-}
-
-/* Ensure the jars exist before .classpath is generated */
-tasks.named("eclipseClasspath").configure { dependsOn(copyTasks) }
-
-/* Supply those jars to the ideLibs configuration (after evaluation) */
-afterEvaluate { dependencies { add("ideLibs", fileTree(ideLibDir) { include("*.jar") }) } }
-
-/* ------------------ FINAL patcher: runs AFTER :eclipse ---------------- */
-val injectIdeLibs =
-    tasks.register("injectIdeLibs") {
-        dependsOn("eclipse") // run after all eclipse files are generated
-        doLast {
-            val cpFile = file(".classpath")
-            if (!cpFile.exists()) return@doLast
-
-            val jars = fileTree(ideLibDir.get()) { include("*.jar") }.files.sortedBy { it.name }
-            if (jars.isEmpty()) return@doLast
-
-            // Parse DOM
-            val dbf = DocumentBuilderFactory.newInstance()
-            val doc = dbf.newDocumentBuilder().parse(cpFile)
-            val root = doc.documentElement
-
-            // Helper to see if an entry already exists
-            fun exists(path: String): Boolean =
-                root.getElementsByTagName("classpathentry").let { list ->
-                    (0 until list.length).any { i ->
-                        val n = list.item(i)
-                        val kind = n.attributes?.getNamedItem("kind")?.nodeValue
-                        val p = n.attributes?.getNamedItem("path")?.nodeValue
-                        kind == "lib" && p == path
-                    }
-                }
-
-            // Remove any entry that points to ide-libs dir (folder or jars) to avoid dupes
-            val toRemove = mutableListOf<org.w3c.dom.Node>()
-            val list = root.getElementsByTagName("classpathentry")
-            val dirPath = ideLibDir.get().asFile.absolutePath
-            for (i in 0 until list.length) {
-                val n = list.item(i)
-                val kind = n.attributes?.getNamedItem("kind")?.nodeValue
-                val p = n.attributes?.getNamedItem("path")?.nodeValue ?: ""
-                if (kind == "lib" && (p == dirPath || p.startsWith("$dirPath/"))) {
-                    toRemove += n
-                }
-            }
-            toRemove.forEach { root.removeChild(it) }
-
-            // Append our jar entries LAST
-            jars.forEach { f ->
-                val abs = f.absolutePath
-                if (!exists(abs)) {
-                    val entry = doc.createElement("classpathentry")
-                    entry.setAttribute("kind", "lib")
-                    entry.setAttribute("path", abs)
-                    root.appendChild(entry)
-                }
-            }
-
-            // Write back pretty
-            val tf =
-                TransformerFactory.newInstance().newTransformer().apply {
-                    setOutputProperty(OutputKeys.INDENT, "yes")
-                    setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "1")
-                    setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no")
-                    setOutputProperty(OutputKeys.ENCODING, "UTF-8")
-                }
-            Files.newBufferedWriter(cpFile.toPath()).use { w -> tf.transform(DOMSource(doc), StreamResult(w)) }
-        }
-    }
-
-tasks.named("eclipse").configure { finalizedBy(injectIdeLibs) }
+apply(from = "eclipse.gradle.kts") // Import eclipse classpath support script.
 
 /* ---------------------- Reproducible jars ---------------------------- */
-tasks.withType<AbstractArchiveTask>().configureEach {
+tasks.withType<AbstractArchiveTask>().configureEach { // Ensure reproducible .jars
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
 }
@@ -194,58 +91,50 @@ tasks.shadowJar {
 
 tasks.jar { archiveClassifier.set("part") } // Applies to root jarfile only.
 
-tasks.build { dependsOn(tasks.spotlessApply, tasks.shadowJar) }
+tasks.build { dependsOn(tasks.spotlessApply, tasks.shadowJar) } // Build depends on spotless and shadow.
 
 /* --------------------------- Javac opts ------------------------------- */
 tasks.withType<JavaCompile>().configureEach {
-    options.compilerArgs.addAll(listOf("-parameters", "-Xlint:deprecation"))
-    options.encoding = "UTF-8"
-    options.isFork = true
-}
-
-/* ----------------------- Eclipse BuildShip SHIM ----------------------- */
-fun Project.addResolvableEclipseConfigs() {
-    val jarAttr =
-        objects.named(org.gradle.api.attributes.LibraryElements::class, org.gradle.api.attributes.LibraryElements.JAR)
-    val apiAttr = objects.named(org.gradle.api.attributes.Usage::class, org.gradle.api.attributes.Usage.JAVA_API)
-
-    val compileOnlyRes =
-        configurations.create("eclipseCompileOnly") {
-            extendsFrom(configurations.compileOnly.get())
-            isCanBeResolved = true
-            isCanBeConsumed = false
-            attributes.attribute(org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE, apiAttr)
-            attributes.attribute(org.gradle.api.attributes.LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, jarAttr)
-        }
-    val compileOnlyApiRes =
-        configurations.create("eclipseCompileOnlyApi") {
-            extendsFrom(configurations.getByName("compileOnlyApi"))
-            isCanBeResolved = true
-            isCanBeConsumed = false
-            attributes.attribute(org.gradle.api.attributes.Usage.USAGE_ATTRIBUTE, apiAttr)
-            attributes.attribute(org.gradle.api.attributes.LibraryElements.LIBRARY_ELEMENTS_ATTRIBUTE, jarAttr)
-        }
-    eclipse.classpath.plusConfigurations.addAll(listOf(compileOnlyRes, compileOnlyApiRes))
-}
-
-addResolvableEclipseConfigs()
-
-subprojects {
-    apply(plugin = "java-library")
-    apply(plugin = "eclipse")
-    addResolvableEclipseConfigs()
-    eclipse.project.name = "${project.name}-${rootProject.name}"
-    tasks.withType<Jar>().configureEach { archiveBaseName.set("${project.name}-${rootProject.name}") }
+    options.compilerArgs.add("-parameters") // Enable reflection for java code.
+    options.isFork = true // Run javac in its own process.
+    options.compilerArgs.add("-Xlint:deprecation") // Trigger deprecation warning messages.
+    options.encoding = "UTF-8" // Use UTF-8 file encoding.
 }
 
 /* ----------------------------- Auto Formatting ------------------------ */
 spotless {
     java {
-        removeUnusedImports()
-        palantirJavaFormat()
+        eclipse().configFile("config/formatter/eclipse-java-formatter.xml") // Eclipse java formatting.
+        leadingTabsToSpaces() // Convert leftover leading tabs to spaces.
+        removeUnusedImports() // Remove imports that aren't being called.
     }
     kotlinGradle {
-        ktfmt().kotlinlangStyle().configure { it.setMaxWidth(120) }
-        target("build.gradle.kts", "settings.gradle.kts")
+        ktfmt().kotlinlangStyle().configure { it.setMaxWidth(120) } // JetBrains Kotlin formatting.
+        target("build.gradle.kts", "settings.gradle.kts") // Gradle files to format.
     }
+}
+
+checkstyle {
+    toolVersion = "10.18.1" // Declare checkstyle version to use.
+    configFile = file("config/checkstyle/checkstyle.xml") // Point checkstyle to config file.
+    isIgnoreFailures = true // Don't fail the build if checkstyle does not pass.
+    isShowViolations = true // Show the violations in any IDE with the checkstyle plugin.
+}
+
+tasks.named("compileJava") {
+    dependsOn("spotlessApply") // Run spotless before compiling with the JDK.
+}
+
+tasks.named("spotlessCheck") {
+    dependsOn("spotlessApply") // Run spotless before checking if spotless ran.
+}
+
+/* ------------------------------ Eclipse SHIM ------------------------- */
+
+// This can't be put in eclipse.gradle.kts because Gradle is weird.
+subprojects {
+    apply(plugin = "java-library")
+    apply(plugin = "eclipse")
+    eclipse.project.name = "${project.name}-${rootProject.name}"
+    tasks.withType<Jar>().configureEach { archiveBaseName.set("${project.name}-${rootProject.name}") }
 }

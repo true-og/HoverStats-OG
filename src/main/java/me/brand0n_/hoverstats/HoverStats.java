@@ -11,6 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HoverStats extends JavaPlugin {
+
     // Spigot id
     public String resourceID = "100245";
 
@@ -26,6 +27,7 @@ public final class HoverStats extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         // Save the config
         saveDefaultConfig();
         // Check hex version
@@ -37,25 +39,35 @@ public final class HoverStats extends JavaPlugin {
         setupClasses();
         // Check if SoftDepends on are loaded
         checkSoftDependentPlugins();
+
     }
 
     private void setupClasses() {
+
         instance = this;
         CommandUtils.init();
         EventUtils.init();
+
     }
 
     private void checkSoftDependentPlugins() {
+
         // Check if PlaceholderAPI is installed
         if (Placeholders.hasPAPI()) {
+
             Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] " + Messages.papiHookSuccess());
+
         } else {
+
             Bukkit.getServer().getConsoleSender().sendMessage("[HoverStats] " + Messages.papiHookFailed());
             usePAPI = false;
+
         }
+
     }
 
     public void reloadPlugin(CommandSender sender) {
+
         // Reload the config
         reloadConfig();
         // Save config with comments
@@ -70,15 +82,19 @@ public final class HoverStats extends JavaPlugin {
 
         // Send reload message
         Messages.reloaded(sender);
+
     }
 
     public static String getPrefix() {
 
         return prefix;
+
     }
 
     public static HoverStats getInstance() {
 
         return instance;
+
     }
+
 }
