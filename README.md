@@ -26,6 +26,8 @@ This fix may not work for every instance, if this doesn't work please join our !
 | `hoverstats` | Shows the help message for the plugin |
 | `hoverstats reload` | Reloads the plugin |
 | `hoverstats version` | Shows the current version of the plugin and config file |
+| `hoverstats blacklist [group|user] [Group Name|User Name]` | Blacklist a specific player or group from being able to send hoverable messages |
+| `hoverstats whitelist [group|user] [Group Name|User Name]` | Whitelist a specific player or group allowing them to be able to send hoverable messages |
 </details>
 
 <details>
@@ -48,6 +50,10 @@ This fix may not work for every instance, if this doesn't work please join our !
 | `hoverstats.colors.[color-name]` | This will give the player access to a specific chat color in chat. This has to be the color name (ex. dark_aqua) |
 | `hoverstats.join-formatting` | This will show the player the join format message specified in the config.yml (Given by Default) |
 | `hoverstats.leave-formatting` | This will show the player the quit format message specified in the config.yml (Given by Default) |
+| `hoverstats.blacklist.user` | This will allow the player to blacklist users, removing the ability to show them hoverable messages |
+| `hoverstats.blacklist.group` | This will allow the player to blacklist groups, removing the ability to show them hoverable messages |
+| `hoverstats.whitelist.user` | This will allow the player to whitelist users, allowing them to show hoverable messages |
+| `hoverstats.whitelist.group` | This will allow the player to whitelist groups, allowing them to show hoverable messages |
 </details>
 
 <br />
